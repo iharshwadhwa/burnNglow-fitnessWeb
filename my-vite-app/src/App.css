@@ -1,0 +1,174 @@
+/* App.css */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+  background: linear-gradient(to right, #a8e063, #56ab2f);
+  color: #333;
+  min-height: 100vh;
+}
+.special-gothic-expanded-one-regular {
+  font-family: 'Special Gothic Expanded One', sans-serif;
+}
+
+
+.app-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  min-height: 100vh;
+}
+
+.header {
+  text-align: center;
+  color: #fff;
+  background-color: rgba(0, 0, 0, 0.6);
+  padding: 2rem;
+  border-radius: 10px;
+  margin-bottom: 1rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.header h1 {
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.header p {
+  font-size: 1.1rem;
+  opacity: 0.9;
+}
+
+.form-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  background-color: white;
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.dropdown {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.dropdown label {
+  font-weight: 600;
+  font-size: 1.1rem;
+  color: #2c3e50;
+}
+
+.dropdown select {
+  padding: 12px;
+  border-radius: 6px;
+  border: 1px solid #ddd;
+  background-color: #f8f9fa;
+  font-size: 1rem;
+  transition: all 0.3s;
+}
+
+.dropdown select:focus {
+  outline: none;
+  border-color: #56ab2f;
+  box-shadow: 0 0 0 2px rgba(168, 224, 99, 0.3);
+}
+
+.submit-btn {
+  margin-top: 1rem;
+  padding: 1rem;
+  background-color: #56ab2f;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.submit-btn:hover {
+  background-color: #488a27;
+  transform: translateY(-2px);
+}
+
+.submit-btn:active {
+  transform: translateY(0);
+}
+
+.recommendations {
+  background-color: white;
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.recommendations h2 {
+  color: #2c3e50;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  border-bottom: 2px solid #56ab2f;
+  padding-bottom: 0.5rem;
+}
+
+.recommendation-section {
+  margin-bottom: 2rem;
+}
+
+.recommendation-section h3 {
+  color: #56ab2f;
+  margin-bottom: 1rem;
+  font-size: 1.3rem;
+}
+
+.recommendation-section ul {
+  list-style-type: none;
+}
+
+.recommendation-section li {
+  margin-bottom: 0.8rem;
+  padding: 0.8rem;
+  background-color: #f8f9fa;
+  border-radius: 6px;
+  border-left: 4px solid #56ab2f;
+}
+
+.recommendation-section li strong {
+  color: #2c3e50;
+}
+
+@media (max-width: 768px) {
+  .app-container {
+    padding: 1rem;
+  }
+  
+  .header h1 {
+    font-size: 1.8rem;
+  }
+  
+  .header p {
+    font-size: 1rem;
+  }
+}

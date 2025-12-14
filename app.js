@@ -11,7 +11,7 @@ const SECRET_KEY = "your_secret_key";
 const dbConnection = mysql.createPool({
   host: "localhost",
   user: "root",
-  password: "Rrap@0671", // Make sure this is correct
+  password: "Harsh@2710", // Make sure this is correct
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0
@@ -42,7 +42,7 @@ checkAndCreateDatabase();
 const db = mysql.createPool({
   host: "localhost",
   user: "root",
-  password: "Rrap@0671", 
+  password: "Harsh@2710", 
   database: "fitness_diet", // Specify the database to use
   waitForConnections: true,
   connectionLimit: 10,
@@ -72,6 +72,11 @@ const createUsersTable = async () => {
 createUsersTable();
 // Use CORS middleware
 app.use(cors()); // This will allow all origins by default
+
+app.use((req, res, next) => {
+  console.log("➡️", req.method, req.url);
+  next();
+});
 
 // Middleware to parse JSON bodies
 app.use(bodyParser.json());
@@ -109,8 +114,9 @@ app.post("/get-diet", async (req, res) => {
     const [results] = await db.query(query, values);
 
     if (results.length === 0) {
-      return res.status(404).json({ message: "No matching diet plan found." });
-    }
+     return res.status(200).json([]);
+}
+
 
     // Check if the 'plan' is already a parsed object (JSON)
     const formattedResults = results.map((result) => {

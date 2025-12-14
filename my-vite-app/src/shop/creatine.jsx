@@ -1,10 +1,15 @@
-import React from "react";
+import React, { useState } from "react";
+import { useCart } from "./catcontext";
+import { Link } from "react-router-dom";
 
 const Creatine = () => {
-  const creatineProducts = [
+  const { addToCart } = useCart();
+  const [addedMessage, setAddedMessage] = useState("");
+
+  const monohydrateProducts = [
     {
       id: 1,
-      name: "Wellcore Nutrition Creatine",
+      name: "Wellcore Nutrition Creatine Monohydrate",
       description: "Micronized creatine for maximum absorption.",
       price: "₹1499",
       image: "/creatinepic/wellcore.png",
@@ -23,109 +28,142 @@ const Creatine = () => {
       price: "₹1299",
       image: "/creatinepic/gnc.jpg",
     },
+  ];
+
+  const hclProducts = [
     {
       id: 4,
-      name: "nutrabay Creatine",
-      description: "Powerful creatine supplement for intense workouts.",
-      price: "₹1199",
-      image: "/creatinepic/nutrabay.jpg",
-    },
-    {
-      id: 5,
-      name: "Ripped up creatine",
-      description: "Premium creatine hydrochloride for better solubility.",
+      name: "Ripped Up Creatine HCL",
+      description: "Creatine HCL for better solubility & performance.",
       price: "₹1699",
       image: "/creatinepic/ripped.jpg",
     },
     {
+      id: 5,
+      name: "MuscleTech Creactor Creatine HCL",
+      description: "Enhanced strength and endurance with HCL.",
+      price: "₹1599",
+      image: "https://m.media-amazon.com/images/I/71rybwMBemL.AC_UL1000.jpg",
+    },
+  ];
+
+  const blendProducts = [
+    {
       id: 6,
+      name: "Nutrabay Creatine Blend",
+      description: "Micronized creatine and performance boosters.",
+      price: "₹1199",
+      image: "/creatinepic/nutrabay.jpg",
+    },
+    {
+      id: 7,
       name: "BPI Sports Creatine",
-      description: "Enhanced creatine formula for muscle strength.",
+      description: "Advanced creatine formula for muscle strength.",
       price: "₹1399",
       image: "https://m.media-amazon.com/images/I/71rybwMBemL.AC_UL1000.jpg",
     },
   ];
 
+  const handleAddToCart = (product) => {
+    addToCart(product);
+    setAddedMessage(`${product.name} has been added to your cart!`);
+    setTimeout(() => setAddedMessage(""), 3000);
+  };
+
+  const renderProducts = (products) =>
+    products.map((product) => (
+      <div className="col-md-3 mb-4" key={product.id}>
+        <div
+          className="card h-100"
+          style={{
+            backgroundColor: "white",
+            color: "black",
+            border: "none",
+            transition: "transform 0.3s ease",
+          }}
+          onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.05)")}
+          onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
+        >
+          <img
+            src={product.image}
+            alt={product.name}
+            className="card-img-top"
+            style={{
+              height: "320px",
+              objectFit: "cover",
+            }}
+          />
+          <div className="card-body d-flex flex-column">
+            <h5 className="card-title">{product.name}</h5>
+            <p className="card-text">{product.description}</p>
+            <h6 className="mt-auto">{product.price}</h6>
+            <button
+              className="btn btn-success mt-3"
+              onClick={() => handleAddToCart(product)}
+            >
+              Add to Cart
+            </button>
+          </div>
+        </div>
+      </div>
+    ));
+
   return (
     <div
       style={{
-        backgroundColor: "#2ECC71", // Darker, rich green
         minHeight: "100vh",
         padding: "2rem",
-        fontFamily: "'Roboto', sans-serif",
+        color: "white",
+        fontFamily: "'Segoe UI', sans-serif",
       }}
     >
-      {/* Bootstrap CDN */}
       <link
         rel="stylesheet"
         href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
       />
 
-      <h1 className="text-center text-white special-gothic-expanded-one-regular" style={{ color: "#fff" }}>
-        💪 Creatine Supplements
-      </h1>
-      <p
-        className="text-center mb-5"
-        style={{ maxWidth: "600px", margin: "0 auto", color: "#fff" }}
-      >
-        Browse our selection of top creatine supplements to enhance your workout
-        performance and build muscle.
+      <h2 className="text-center text-white special-gothic-expanded-one-regular">
+        ⚡ Creatine Supplements
+      </h2>
+      <p className="text-center mb-5" style={{ maxWidth: "600px", margin: "0 auto" }}>
+        Enhance your strength, recovery, and endurance with premium creatine monohydrate, HCL, and advanced blends.
       </p>
 
+      {addedMessage && (
+        <div className="alert alert-success text-center" role="alert">
+          {addedMessage}
+        </div>
+      )}
+
+      <div className="position-fixed" style={{ top: "10px", right: "10px", zIndex: "1000" }}>
+        <Link to="/shop/checkout" className="btn btn-warning btn-sm">
+          🛒 Go to Checkout
+        </Link>
+      </div>
+
       <div className="container">
-        <div className="row">
-          {creatineProducts.map((product) => (
-            <div className="col-md-4 mb-4" key={product.id}>
-              <div
-                className="card h-100"
-                style={{
-                  backgroundColor: "#ffffff",
-                  borderRadius: "10px",
-                  boxShadow: "0 4px 10px rgba(0, 0, 0, 0.2)",
-                  overflow: "hidden",
-                }}
-              >
-                <img
-                  src={product.image}
-                  alt={product.name}
-                  className="card-img-top"
-                  style={{ height: "250px", objectFit: "cover" }}
-                />
-                <div className="card-body d-flex flex-column">
-                  <h5
-                    className="card-title"
-                    style={{ fontSize: "18px", fontWeight: "600", color: "#333" }}
-                  >
-                    {product.name}
-                  </h5>
-                  <p
-                    className="card-text"
-                    style={{ color: "#555", fontSize: "14px" }}
-                  >
-                    {product.description}
-                  </p>
-                  <h6
-                    className="mt-auto"
-                    style={{ color: "#28a745", fontWeight: "bold" }}
-                  >
-                    {product.price}
-                  </h6>
-                  <button
-                    className="btn btn-success mt-3"
-                    style={{
-                      borderRadius: "5px",
-                      padding: "10px 15px",
-                      fontSize: "16px",
-                      backgroundColor: "#28a745",
-                      border: "none",
-                    }}
-                  >
-                    Add to Cart
-                  </button>
-                </div>
-              </div>
-            </div>
-          ))}
+        {/* Monohydrate */}
+        <div className="mb-5">
+          <h3 className="text-white text-center mb-4">Creatine Monohydrate</h3>
+          <div className="row">
+            {renderProducts(monohydrateProducts)}
+          </div>
+        </div>
+
+        {/* Creatine HCL */}
+        <div className="mb-5">
+          <h3 className="text-white text-center mb-4">Creatine HCL</h3>
+          <div className="row">
+            {renderProducts(hclProducts)}
+          </div>
+        </div>
+
+        {/* Creatine Blends */}
+        <div className="mb-5">
+          <h3 className="text-white text-center mb-4">Creatine Blends</h3>
+          <div className="row">
+            {renderProducts(blendProducts)}
+          </div>
         </div>
       </div>
     </div>

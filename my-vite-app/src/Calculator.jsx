@@ -1,167 +1,129 @@
-import { useState } from 'react'
-import './App.css'
+import { useState } from "react";
+import './DietPlannerStyles.css';
+import "bootstrap/dist/css/bootstrap.min.css";
 
-
-function Calculate() {
-  const [selectedAllergy, setSelectedAllergy] = useState('');
-  const [selectedAge, setSelectedAge] = useState('');
-  const [selectedGoal, setSelectedGoal] = useState('');
-  const [recommendations, setRecommendations] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);
+function Calculator() {
+  const [allergy, setAllergy] = useState("");
+  const [age, setAge] = useState("");
+  const [goal, setGoal] = useState("");
+  const [results, setResults] = useState([]);
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async () => {
-    if (!selectedAllergy || !selectedAge || !selectedGoal) {
-      setError("Please select all options before submitting");
+    if (!allergy || !age || !goal) {
+      setError("Please select all fields");
       return;
     }
 
-    setIsLoading(true);
-    setError(null);
-    
+    setLoading(true);
+    setError("");
+    setResults([]);
+
     try {
-      const requestData = {
-        allergy: selectedAllergy,
-        age: selectedAge,
-        goal: selectedGoal
-      };
-      
-      const response = await fetch('http://localhost:3000/get-diet', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(requestData)
+      const res = await fetch("http://localhost:3000/get-diet", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ allergy, age, goal })
       });
-      
-      if (!response.ok) {
-        throw new Error(`API request failed with status ${response.status}`);
-      }
-      
-      const data = await response.json();
-      setRecommendations(data);
-    } catch (err) {
-      setError(`Failed to fetch recommendations: ${err.message}`);
-      console.error("API Error:", err);
+
+      if (!res.ok) throw new Error("No plan found");
+
+      const data = await res.json();
+      setResults(data);
+    } catch {
+      setError("No diet plan available for selected options");
     } finally {
-      setIsLoading(false);
+      setLoading(false);
     }
   };
 
-  // Helper function to format the condition value for display
-  const formatConditionValue = (value) => {
-    if (!value) return '';
-    
-    // Replace underscores with spaces
-    value = value.replace(/_/g, ' ');
-    
-    // Capitalize first letter of each word
-    return value.split(' ')
-      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(' ');
-  };
-
-  // Helper function to format meal key for display
-  const formatMealKey = (key) => {
-    if (!key) return '';
-    
-    // Replace underscores with spaces
-    key = key.replace(/_/g, ' ');
-    
-    // Capitalize first letter of each word
-    return key.split(' ')
-      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(' ');
-  };
-
   return (
-    <div className="app-container">
-      <header className="header">
-        <h1>Personalized Diet Recommendations</h1>
-        <p>Select your dietary restrictions, age group, and fitness goals for customized meal suggestions</p>
-      </header>
-      
-      <div className="form-container">
-        <div className="dropdown">
-          <label htmlFor="allergy">Allergies / Dietary Restrictions</label>
-          <select 
-            id="allergy" 
-            value={selectedAllergy} 
-            onChange={(e) => setSelectedAllergy(e.target.value)}
+  <div className="diet-planner-page">
+    <div className="container">
+      <div className="card shadow-lg border-0 rounded-4 p-4 mx-auto" style={{ maxWidth: "700px" }}>
+        
+        <h2 className="text-center fw-bold mb-4">
+          Personalized Diet Recommendations
+        </h2>
+
+        <div className="mb-3">
+          <select
+            className="form-select"
+            value={allergy}
+            onChange={(e) => setAllergy(e.target.value)}
           >
-            <option value="">Select an allergy/restriction</option>
-            <option value="lactose_intolerant">Lactose Intolerant</option>
-            <option value="milk_allergy">Milk Allergy</option>
-            <option value="high_cholesterol">High Cholesterol</option>
+            <option value="">Select Allergy</option>
+            <option value="Lactose Intolerant">Lactose Intolerant</option>
+            <option value="Milk Allergy">Milk Allergy</option>
+            <option value="High Cholesterol">High Cholesterol</option>
           </select>
         </div>
 
-        <div className="dropdown">
-          <label htmlFor="age">Age Group</label>
-          <select 
-            id="age" 
-            value={selectedAge} 
-            onChange={(e) => setSelectedAge(e.target.value)}
+        <div className="mb-3">
+          <select
+            className="form-select"
+            value={age}
+            onChange={(e) => setAge(e.target.value)}
           >
-            <option value="">Select your age group</option>
-            <option value="15-20">15-20 years</option>
-            <option value="21-30">21-30 years</option>
-            <option value="31-40">31-40 years</option>
-            <option value="41-50">41-50 years</option>
-            <option value="50+">50+ years</option>
+            <option value="">Select Age Group</option>
+            <option value="15-20 years">15–20 years</option>
+            <option value="21-30 years">21–30 years</option>
+            <option value="31-40 years">31–40 years</option>
+            <option value="41-50 years">41–50 years</option>
+            <option value="50+ years">50+ years</option>
           </select>
         </div>
 
-        <div className="dropdown">
-          <label htmlFor="goal">Fitness Goal</label>
-          <select 
-            id="goal" 
-            value={selectedGoal} 
-            onChange={(e) => setSelectedGoal(e.target.value)}
+        <div className="mb-4">
+          <select
+            className="form-select"
+            value={goal}
+            onChange={(e) => setGoal(e.target.value)}
           >
-            <option value="">Select your fitness goal</option>
-            <option value="lean_gain">Lean Gain</option>
-            <option value="bulk_gain">Bulk Gain</option>
+            <option value="">Select Goal</option>
+            <option value="Lean Gain">Lean Gain</option>
+            <option value="Bulk Gain">Bulk Gain</option>
           </select>
         </div>
 
-        {error && <div className="error">{error}</div>}
+        {error && (
+          <div className="alert alert-danger text-center">
+            {error}
+          </div>
+        )}
 
-        <button 
-          className={`submit-btn ${isLoading ? 'loading' : ''}`} 
-          onClick={handleSubmit} 
-          disabled={isLoading}
+        <button
+          className="btn btn-success w-100 fw-semibold"
+          onClick={handleSubmit}
+          disabled={loading}
         >
-          {isLoading ? 'Loading...' : 'Get Recommendations'}
+          {loading ? "Loading..." : "Get Recommendations"}
         </button>
-      </div>
 
-      {recommendations && recommendations.length > 0 && (
-        <div className="recommendations">
-          <h2>Your Personalized Diet Recommendations</h2>
-          
-          {recommendations.map((item, index) => (
-            <div className="recommendation-section" key={index}>
-              <h3>For {formatConditionValue(item.condition_value)}:</h3>
-              <ul>
-                {Object.entries(item).map(([key, value]) => {
-                  // Skip the condition_value property
-                  if (key === 'condition_value') return null;
-                  
-                  return (
-                    <li key={key}>
-                      <strong>{formatMealKey(key)}:</strong> {value}
-                    </li>
-                  );
-                })}
-              </ul>
-            </div>
-          ))}
-        </div>
-      )}
-    
+        {results.length > 0 && (
+          <div className="mt-4">
+            <h4 className="fw-bold mb-3">Your Diet Plan</h4>
+
+            {results.map((r, i) => (
+              <div
+                key={i}
+                className="border rounded-3 p-3 mb-3 bg-light"
+              >
+                <h5 className="fw-semibold">{r.condition_value}</h5>
+                <p><strong>Meal 1:</strong> {r.meal_1}</p>
+                <p><strong>Meal 3:</strong> {r.meal_3}</p>
+                <p><strong>Post Workout:</strong> {r.post_workout}</p>
+              </div>
+            ))}
+          </div>
+        )}
+
+      </div>
     </div>
-  )
+  </div>
+);
+
 }
 
-export default Calculate
+export default Calculator;

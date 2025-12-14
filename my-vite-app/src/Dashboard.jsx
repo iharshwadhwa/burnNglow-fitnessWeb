@@ -65,7 +65,7 @@ function Dashboard() {
       answer: "Each diet plan selected can be customised according to things such as your personal statistics, current physical condition, activity levels and whether you want to lose fat, stay in shape, or gain muscle. It can be personalised to whether you are a vegan or not, if you have any allergies such as gluten, also including the option for halal and kosher recipes only. You can even tell the planner that you prefer to only drink smoothies in the morning. Once your diet plan is set up, the meal planner automatically finds recipes to match the diet plan criteria. Have a look at the suggested recipes that are produced for you automatically and adjust until you get what is right for you."
     },
     {
-      question: "Will I need to update my diet meal plan often?",
+      question: "Will I need to update BurnNGlow often?",
       answer: "This depends mainly on how fast your weight loss is. If you notice that your weight loss has started to stall you made need to set up a new plan with a lower calorie requirement (or increase your daily activity instead and stick with the same plan)."
     },
     {
@@ -84,7 +84,16 @@ function Dashboard() {
 
   return (
     
-    <div className="bg-light min-vh-100">
+
+    <div
+    className="min-vh-100"
+    style={{
+      backgroundColor: "#FEFAE0",
+      backgroundSize: 'cover',
+      backgroundRepeat: 'no-repeat',
+      backgroundPosition: 'center',
+    }}
+  >
       {loading ? (
         <div className="d-flex justify-content-center align-items-center vh-100">
           <div className="text-center">
@@ -102,7 +111,7 @@ function Dashboard() {
       <nav className="navbar navbar-expand-lg navbar-dark bg-success shadow-sm sticky-top">
       <div className="container">
         <Link className="navbar-brand fw-bold" to="/">
-          <i className="bi bi-heart-pulse me-2"></i>My Diet Meal Plan
+          <i className="bi bi-heart-pulse me-2"></i>BurnNGlow
         </Link>
         <button 
           className="navbar-toggler border-0" 
@@ -153,11 +162,12 @@ function Dashboard() {
               <Link className="nav-link px-3" to="/bmi-calculator">Calculator</Link>
             </li>
             <li className="nav-item">
-              <Link className="nav-link px-3" to="/excercise">Excercise</Link>
+              <Link className="nav-link px-3" to="/exercise">Excercise</Link>
             </li>
             <li className="nav-item">
               <Link className="nav-link px-3" to="#">About</Link>
             </li>
+            
           </ul>
           <div className="d-flex ms-lg-3">
             <button 
@@ -423,7 +433,7 @@ function Dashboard() {
                     />
                     <h3 className="h5 mb-3">Download Plan to PDF</h3>
                     <p className="text-secondary small">
-                      With My Diet Meal Plan Premier you can view your plans offline
+                      With BurnNGlow Premier you can view your plans offline
                       by downloading them to PDF. Try sticking the meal plan summary
                       to your fridge to keep you organized and motivated. If you are
                       a nutritionist, sending the meal plan and grocery list to your
@@ -530,7 +540,7 @@ function Dashboard() {
         className="mb-3" 
         style={{ height: "40px" }} 
       />
-      <div className="text-secondary">©2025 My Diet Meal Plan Ltd</div>
+      <div className="text-secondary">©2025 BurnNGlow Ltd</div>
     </div>
   </div>
 </footer>

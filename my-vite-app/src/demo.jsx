@@ -1,11 +1,6 @@
-import React, { useState } from "react";
-import { useCart } from "./catcontext";
-import { Link } from "react-router-dom";
+import React from "react";
 
 const Protein = () => {
-  const { addToCart } = useCart();
-  const [addedMessage, setAddedMessage] = useState("");
-
   const isolateProducts = [
     {
       id: 1,
@@ -13,6 +8,7 @@ const Protein = () => {
       description: "Pure protein isolate with low carbs and fat.",
       price: "₹59.99",
       image: "/protienpic/myprotien.png",
+       
     },
     {
       id: 2,
@@ -99,34 +95,20 @@ const Protein = () => {
     },
   ];
 
-  const handleAddToCart = (product) => {
-    addToCart(product);
-    setAddedMessage(`${product.name} has been added to your cart!`);
-    setTimeout(() => setAddedMessage(""), 3000);
-  };
-
   const renderProducts = (products) =>
     products.map((product) => (
-      <div className="col-md-3 mb-4" key={product.id}>
+      <div className="col-md-12 mb-4" key={product.id}>
         <div
           className="card h-100"
-          style={{
-            backgroundColor: "white",
-            color: "black",
-            border: "none",
-            transition: "transform 0.3s ease",
-          }}
-          onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.05)")}
-          onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
+          style={{ backgroundColor: "white", color: "black", border: "none",transition: "transform 0.3s ease" }}
+          onMouseEnter={(e) => e.currentTarget.style.transform = "scale(1.05)"}
+          onMouseLeave={(e) => e.currentTarget.style.transform = "scale(1)"}
         >
           <img
             src={product.image}
             alt={product.name}
             className="card-img-top"
-            style={{
-              height: "320px",
-              objectFit: "cover",
-            }}
+            style={{ height: "320px", objectFit: "cover" }}
           />
           <div className="card-body d-flex flex-column">
             <h5 className="card-title">{product.name}</h5>
@@ -134,7 +116,7 @@ const Protein = () => {
             <h6 className="mt-auto">{product.price}</h6>
             <button
               className="btn btn-success mt-3"
-              onClick={() => handleAddToCart(product)}
+              onClick={() => handleAddToCart(product)} // Trigger the "added to cart" message
             >
               Add to Cart
             </button>
@@ -143,6 +125,11 @@ const Protein = () => {
       </div>
     ));
 
+    const handleAddToCart = (product) => {
+      addToCart(product);
+      setAddedMessage(`${product.name} has been added to your cart!`);
+      setTimeout(() => setAddedMessage(""), 3000); // Clear the message after 3 seconds
+    };
   return (
     <div
       style={{
@@ -152,6 +139,7 @@ const Protein = () => {
         fontFamily: "'Segoe UI', sans-serif",
       }}
     >
+      {/* Bootstrap CDN */}
       <link
         rel="stylesheet"
         href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
@@ -164,39 +152,26 @@ const Protein = () => {
         Explore high-quality protein supplements from Isolate, Concentrate, and Plant-Based sources to support your fitness journey.
       </p>
 
-      {addedMessage && (
-        <div className="alert alert-success text-center" role="alert">
-          {addedMessage}
-        </div>
-      )}
+      
 
-      <div className="position-fixed" style={{ top: "10px", right: "10px", zIndex: "1000" }}>
-        <Link to="/shop/checkout" className="btn btn-warning btn-sm">
-          🛒 Go to Checkout
-        </Link>
-      </div>
 
       <div className="container">
-        {/* Isolate */}
-        <div className="mb-5">
-          <h3 className="text-white text-center mb-4">Isolate Proteins</h3>
-          <div className="row">
+        <div className="row">
+          {/* Isolate Proteins */}
+          <div className="col-md-4">
+            <h3 className="text-white text-center mb-4">Isolate Proteins</h3>
             {renderProducts(isolateProducts)}
           </div>
-        </div>
 
-        {/* Concentrate */}
-        <div className="mb-5">
-          <h3 className="text-white text-center mb-4">Concentrate Proteins</h3>
-          <div className="row">
+          {/* Concentrate Proteins */}
+          <div className="col-md-4">
+            <h3 className="text-white text-center mb-4">Concentrate Proteins</h3>
             {renderProducts(concentrateProducts)}
           </div>
-        </div>
 
-        {/* Plant-Based */}
-        <div className="mb-5">
-          <h3 className="text-white text-center mb-4">Plant-Based Proteins</h3>
-          <div className="row">
+          {/* Plant-Based Proteins */}
+          <div className="col-md-4">
+            <h3 className="text-white text-center mb-4">Plant-Based Proteins</h3>
             {renderProducts(plantProteinProducts)}
           </div>
         </div>

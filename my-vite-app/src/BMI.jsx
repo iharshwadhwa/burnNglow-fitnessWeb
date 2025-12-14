@@ -48,7 +48,7 @@ function BMICalculator() {
     <div
       className="min-vh-100"
       style={{
-        background: 'linear-gradient(to right, #a8e063, #56ab2f)',
+        backgroundImage: 'linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%)',
         minHeight: '100vh',
       }}
     >

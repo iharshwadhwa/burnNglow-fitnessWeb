@@ -1,6 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
+import { useCart } from "./catcontext";
+import { Link } from "react-router-dom";
 
 const Vitamin = () => {
+  const { addToCart } = useCart();
+  const [addedMessage, setAddedMessage] = useState("");
+
   const vitaminProducts = [
     {
       id: 1,
@@ -46,67 +51,73 @@ const Vitamin = () => {
     },
   ];
 
+  const handleAddToCart = (product) => {
+    addToCart(product);
+    setAddedMessage(`${product.name} has been added to your cart!`);
+    setTimeout(() => setAddedMessage(""), 3000);
+  };
+
   return (
     <div
       style={{
-        background: "linear-gradient(to bottom right, #76c7a7, #3fa96d)",
         minHeight: "100vh",
         padding: "2rem",
+        color: "white",
         fontFamily: "'Segoe UI', sans-serif",
       }}
     >
-      {/* Bootstrap CDN */}
       <link
         rel="stylesheet"
         href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
       />
 
-      <h1 className="text-center mb-4" style={{ color: "#fff" }}>
+      <h2 className="text-center text-white special-gothic-expanded-one-regular">
         💊 Vitamin Supplements
-      </h1>
-      <p
-        className="text-center mb-5"
-        style={{ maxWidth: "600px", margin: "0 auto", color: "#f0f0f0" }}
-      >
-        Shop our range of premium vitamin supplements to support your health and
-        well-being every day.
+      </h2>
+      <p className="text-center mb-5" style={{ maxWidth: "600px", margin: "0 auto" }}>
+        Shop our range of premium vitamin supplements to support your health and well-being every day.
       </p>
+
+      {addedMessage && (
+        <div className="alert alert-success text-center" role="alert">
+          {addedMessage}
+        </div>
+      )}
+
+      <div className="position-fixed" style={{ top: "10px", right: "10px", zIndex: "1000" }}>
+        <Link to="/shop/checkout" className="btn btn-warning btn-sm">
+          🛒 Go to Checkout
+        </Link>
+      </div>
 
       <div className="container">
         <div className="row">
           {vitaminProducts.map((product) => (
-            <div className="col-md-4 mb-4" key={product.id}>
+            <div className="col-md-3 mb-4" key={product.id}>
               <div
                 className="card h-100"
                 style={{
-                  backgroundColor: "#ffffff",
-                  borderRadius: "12px",
-                  boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
+                  backgroundColor: "white",
+                  color: "black",
+                  border: "none",
+                  transition: "transform 0.3s ease",
                 }}
+                onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.05)")}
+                onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
               >
                 <img
                   src={product.image}
                   alt={product.name}
                   className="card-img-top"
-                  style={{ height: "250px", objectFit: "cover" }}
+                  style={{ height: "320px", objectFit: "cover" }}
                 />
                 <div className="card-body d-flex flex-column">
-                  <h5 className="card-title" style={{ fontWeight: "600" }}>
-                    {product.name}
-                  </h5>
-                  <p className="card-text" style={{ color: "#666", fontSize: "14px" }}>
-                    {product.description}
-                  </p>
-                  <h6 className="mt-auto text-success" style={{ fontWeight: "bold" }}>
-                    {product.price}
-                  </h6>
+                  <h5 className="card-title">{product.name}</h5>
+                  <p className="card-text">{product.description}</p>
+                  <h6 className="mt-auto">{product.price}</h6>
                   <button
                     className="btn btn-success mt-3"
-                    style={{
-                      backgroundColor: "#28a745",
-                      border: "none",
-                      fontWeight: "500",
-                    }}
+                    onClick={() => handleAddToCart(product)}
                   >
                     Add to Cart
                   </button>

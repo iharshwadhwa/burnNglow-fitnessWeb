@@ -3,6 +3,9 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
+// --- FIXED: Import the logo image here ---
+import logoImg from './assets/images/01-logo-dark.svg';
+
 function Login() {
   const [formData, setFormData] = useState({
     email: '',
@@ -63,8 +66,9 @@ function Login() {
             <div className="card border-0 shadow-sm rounded-3">
               <div className="card-body p-5">
                 <div className="text-center mb-4">
+                  {/* --- FIXED: Used the imported variable (logoImg) instead of the string path --- */}
                   <img 
-                    src="/src/assets/images/01-logo-dark.svg" 
+                    src={logoImg}
                     alt="My Diet Meal Plan Logo" 
                     className="mb-3"
                     style={{ height: "50px" }}

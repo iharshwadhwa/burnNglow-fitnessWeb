@@ -3,6 +3,25 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { Link, useNavigate } from 'react-router-dom';
 import 'bootstrap/dist/js/bootstrap.bundle.min';
 
+import todayPlanImg from "./assets/images/home/today-plan.png";
+import caloriesImg from "./assets/images/home/calories.png";
+import macroImg from "./assets/images/home/macro.png";
+
+import flexibleImg from "./assets/images/home/flexible.png";
+import rectangleImg from "./assets/images/home/rectangle.png";
+import bodybuildingImg from "./assets/images/home/bodybuilding.png";
+
+import magaliImg from "./assets/images/home/magaliprogress.jpg";
+import staceyImg from "./assets/images/home/staceyprogress.jpg";
+import jacobImg from "./assets/images/home/jacobprogress.png";
+import adamImg from "./assets/images/home/adamprogress.png";
+
+import logoDark from "./assets/images/01-logo-dark.svg";
+
+
+
+
+
 function Dashboard() {
   const [activeFaq, setActiveFaq] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -10,13 +29,11 @@ function Dashboard() {
   const navigate = useNavigate();
   // Sample diet plans data
   const dietPlans = [
-    { id: 1, name: "Flexible Dieting", image: "src/assets/images/home/flexible.png" },
-    { id: 2, name: "5:2 Diet", image: "src/assets/images/home/rectangle.png" },
-    { id: 3, name: "Classic Bodybuilding Diet", image: "src/assets/images/home/bodybuilding.png" },
-    { id: 4, name: "Keto Diet", image: "src/assets/images/home/diets/keto.jpg" },
-    { id: 5, name: "Paleo Diet", image: "src/assets/images/home/diets/paleo.jpg" },
-    { id: 6, name: "Vegan Diet", image: "src/assets/images/home/diets/vegan.jpg" }
-  ];
+  { id: 1, name: "Flexible Dieting", image: flexibleImg },
+  { id: 2, name: "5:2 Diet", image: rectangleImg },
+  { id: 3, name: "Classic Bodybuilding Diet", image: bodybuildingImg },
+];
+
 
   // Display only 3 diet plans at a time
   const visibleDiets = () => {
@@ -38,11 +55,11 @@ function Dashboard() {
     }
   };
 
-  const handlePrev = () => {
-    if (currentDietIndex > 0) {
-      setCurrentDietIndex(currentDietIndex - 1);
-    }
-  };
+ const handlePrev = () => {
+  if (currentDietIndex > 0) {
+    setCurrentDietIndex(currentDietIndex - 1);
+  }
+};
 
   // Handle FAQ toggles
   const toggleFaq = (index) => {
@@ -186,51 +203,65 @@ function Dashboard() {
         <div className="container py-5">
   
           {/* Hero Section */}
-          <div className="row mb-5 align-items-center">
-            <div className="col-xl-5 col-12 mb-4 mb-xl-0">
-              <h1 className="display-4 fw-bold text-success mb-3">Your Personal Diet Planner</h1>
-              <p className="lead text-secondary mb-4">
-                Calorie and Macro Meal Planner. Serve up recipes for your
-                personalized meal plan automatically. Calculate your nutritional
-                needs and generate custom diet plans for weight loss, bodybuilding
-                and much more!
-              </p>
-              <button type="button" className="btn btn-success btn-lg shadow-sm rounded-pill px-4 py-2">
-              <a href="/calculate"className="text-white" style={{ textDecoration: 'none' }}>Get Started For Free</a>
+<div className="row mb-5 align-items-center">
+  <div className="col-xl-5 col-12 mb-4 mb-xl-0">
+    <h1 className="display-4 fw-bold text-success mb-3">
+      Your Personal Diet Planner
+    </h1>
+    <p className="lead text-secondary mb-4">
+      Calorie and Macro Meal Planner. Serve up recipes for your
+      personalized meal plan automatically. Calculate your nutritional
+      needs and generate custom diet plans for weight loss, bodybuilding
+      and much more!
+    </p>
+    <button
+      type="button"
+      className="btn btn-success btn-lg shadow-sm rounded-pill px-4 py-2"
+    >
+      <a
+        href="/calculate"
+        className="text-white"
+        style={{ textDecoration: "none" }}
+      >
+        Get Started For Free
+      </a>
+      <i className="bi bi-chevron-right ms-2"></i>
+    </button>
+  </div>
 
-                <i className="bi bi-chevron-right ms-2"></i>
-              </button>
-            </div>
-            <div className="col-xl-7 col-12">
-              <div className="row g-4">
-                <div className="col-md-6">
-                  <div className="card border-0 shadow-sm rounded-3 overflow-hidden">
-                    <img
-                      src="src/assets/images/home/today-plan.png"
-                      className="img-fluid"
-                      alt="The meal planner page shows your current meal plan"
-                    />
-                  </div>
-                </div>
-                <div className="col-md-6">
-                  <div className="card border-0 shadow-sm rounded-3 overflow-hidden mb-4">
-                    <img
-                      src="src/assets/images/home/calories.png"
-                      className="img-fluid"
-                      alt="Enter your custom calorie target"
-                    />
-                  </div>
-                  <div className="card border-0 shadow-sm rounded-3 overflow-hidden">
-                    <img
-                      src="src/assets/images/home/macro.png"
-                      className="img-fluid"
-                      alt="The macro meal planner"
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+  <div className="col-xl-7 col-12">
+    <div className="row g-4">
+      <div className="col-md-6">
+        <div className="card border-0 shadow-sm rounded-3 overflow-hidden">
+          <img
+            src={todayPlanImg}
+            className="img-fluid"
+            alt="The meal planner page shows your current meal plan"
+          />
+        </div>
+      </div>
+
+      <div className="col-md-6">
+        <div className="card border-0 shadow-sm rounded-3 overflow-hidden mb-4">
+          <img
+            src={caloriesImg}
+            className="img-fluid"
+            alt="Enter your custom calorie target"
+          />
+        </div>
+
+        <div className="card border-0 shadow-sm rounded-3 overflow-hidden">
+          <img
+            src={macroImg}
+            className="img-fluid"
+            alt="The macro meal planner"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
             
           {/* FAQ Section */}
           <div className="row justify-content-center mb-5">
@@ -498,37 +529,54 @@ function Dashboard() {
           </div>
               
           {/* Diet Plans */}
-          <div className="text-center mb-5">
-            <h2 className="fw-bold mb-2">Choose A Diet Plan Right For You</h2>
-            <p className="text-secondary mb-4">
-              We build custom diet plans but we also offer popular diets
-            </p>
-            <div className="position-relative">
-            
-              <div className="row row-cols-1 row-cols-md-3 g-4">
-                {visibleDiets().map((diet) => (
-                  <div key={diet.id} className="col">
-                    <div className="card border-0 shadow-sm rounded-3 overflow-hidden">
-                      <div 
-                        style={{
-                          height: "250px", 
-                          backgroundImage: `url(${diet.image})`,
-                          backgroundSize: 'cover',
-                          backgroundPosition: 'center',
-                          position: 'relative'
-                        }}
-                      >
-                        <div className="position-absolute bottom-0 start-0 end-0 p-3 text-white bg-dark bg-opacity-75">
-                          <h4 className="mb-2">{diet.name}</h4>
-                          <button className="btn btn-success btn-sm">Choose</button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
+<div className="text-center mb-5">
+  <h2 className="fw-bold mb-2">Choose A Diet Plan Right For You</h2>
+  <p className="text-secondary mb-4">
+    We build custom diet plans but we also offer popular diets
+  </p>
+
+  {/* Navigation buttons */}
+  <div className="d-flex justify-content-center gap-3 mb-4">
+    <button
+      className="btn btn-outline-success"
+      onClick={handlePrev}
+      disabled={currentDietIndex === 0}
+    >
+      Previous
+    </button>
+
+    <button
+      className="btn btn-outline-success"
+      onClick={handleNext}
+      disabled={currentDietIndex + 3 >= dietPlans.length}
+    >
+      Next
+    </button>
+  </div>
+
+  <div className="row row-cols-1 row-cols-md-3 g-4">
+    {visibleDiets().map((diet) => (
+      <div key={diet.id} className="col">
+        <div className="card border-0 shadow-sm rounded-3 overflow-hidden">
+          <div
+            style={{
+              height: "250px",
+              backgroundImage: `url(${diet.image})`,
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+            }}
+          >
+            <div className="position-absolute bottom-0 start-0 end-0 p-3 text-white bg-dark bg-opacity-75">
+              <h4 className="mb-2">{diet.name}</h4>
+              <button className="btn btn-success btn-sm">Choose</button>
             </div>
           </div>
+        </div>
+      </div>
+    ))}
+  </div>
+</div>
+
             
           {/* Footer */}
           <footer className="bg-white text-dark rounded-3 shadow-sm p-5 mt-5">

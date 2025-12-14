@@ -1,3 +1,4 @@
+require("dotenv").config();
 const express = require("express");
 const bodyParser = require("body-parser");
 const mysql = require("mysql2/promise");  // Use mysql2/promise
@@ -5,49 +6,19 @@ const cors = require("cors");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
-const SECRET_KEY = "your_secret_key";
+const SECRET_KEY = process.env.JWT_SECRET;
 
 // Database connection setup (without specifying the database)
-const dbConnection = mysql.createPool({
-  host: "localhost",
-  user: "root",
-  password: "Harsh@2710", // Make sure this is correct
+const db = mysql.createPool({
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
   waitForConnections: true,
-  connectionLimit: 10,
-  queueLimit: 0
+  connectionLimit: 10
 });
-
-// Function to check and create the database if it doesn't exist
-const checkAndCreateDatabase = async () => {
-  try {
-    const [databases] = await dbConnection.query("SHOW DATABASES");
-    const databaseExists = databases.some(db => db.Database === 'fitness_diet');
-
-    if (databaseExists) {
-      console.log("Database 'fitness_diet' exists.");
-    } else {
-      console.log("Database 'fitness_diet' does not exist. Creating it...");
-      await dbConnection.query("CREATE DATABASE fitness_diet");
-      console.log("Database 'fitness_diet' created successfully.");
-    }
-  } catch (err) {
-    console.error("Error checking or creating database:", err);
-  }
-};
-
-// Call the function to check and create the database
-checkAndCreateDatabase();
 
 // After ensuring the database exists, now connect with the database
-const db = mysql.createPool({
-  host: "localhost",
-  user: "root",
-  password: "Harsh@2710", 
-  database: "fitness_diet", // Specify the database to use
-  waitForConnections: true,
-  connectionLimit: 10,
-  queueLimit: 0
-});
 
 const app = express();
 const createUsersTable = async () => {
@@ -71,7 +42,16 @@ const createUsersTable = async () => {
 };
 createUsersTable();
 // Use CORS middleware
-app.use(cors()); // This will allow all origins by default
+
+app.use(cors({
+  origin: [
+    "http://localhost:5173",
+    "https://YOUR_FRONTEND_NAME.vercel.app"
+  ],
+  methods: ["GET", "POST"],
+  allowedHeaders: ["Content-Type", "Authorization"]
+}));
+
 
 app.use((req, res, next) => {
   console.log("➡️", req.method, req.url);
@@ -209,6 +189,8 @@ app.post("/login", async (req, res) => {
 
 
 // Start the server
-app.listen(3000, () => {
-  console.log("Server running on port 3000");
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log("Server running on port", PORT);
 });
+

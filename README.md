@@ -1,10 +1,14 @@
+## 👤 Author
+Harsh Wadhwa  
+GitHub: https://github.com/iharshwadhwa
+
 # Burn n Glow – Fitness Web App 🏋️‍♂️🥗
 
 A modern fitness and diet planning web application built using **React + Vite**.  
 The app focuses on a clean UI, responsive design, and practical fitness utilities.
 
 ## 🚀 Live Demo
-👉 https://YOUR-VERCEL-LINK.vercel.app
+👉https://burn-nglow-fitness-web.vercel.app
 
 ## ✨ Features
 - User-friendly fitness interface

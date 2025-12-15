@@ -23,26 +23,39 @@ const db = mysql.createPool({
 // After ensuring the database exists, now connect with the database
 
 const app = express();
-const createUsersTable = async () => {
-  try {
-    await db.query(`
-      CREATE TABLE IF NOT EXISTS users (
-        id INT AUTO_INCREMENT PRIMARY KEY,
-        email VARCHAR(255) UNIQUE NOT NULL,
-        name VARCHAR(255) NOT NULL,
-        password VARCHAR(255) NOT NULL,
-        phone VARCHAR(20) NOT NULL,
-        height FLOAT NOT NULL,
-        weight FLOAT NOT NULL,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-      )
-    `);
-    console.log("✅ Users table is ready!");
-  } catch (err) {
-    console.error("❌ Error creating users table:", err);
+const initDB = async () => {
+  let connected = false;
+
+  while (!connected) {
+    try {
+      await db.query("SELECT 1");
+      connected = true;
+      console.log("✅ Database connected");
+
+      await db.query(`
+        CREATE TABLE IF NOT EXISTS users (
+          id INT AUTO_INCREMENT PRIMARY KEY,
+          email VARCHAR(255) UNIQUE NOT NULL,
+          name VARCHAR(255) NOT NULL,
+          password VARCHAR(255) NOT NULL,
+          phone VARCHAR(20) NOT NULL,
+          height FLOAT NOT NULL,
+          weight FLOAT NOT NULL,
+          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )
+      `);
+
+      console.log("✅ Users table is ready!");
+    } catch (err) {
+      console.log("⏳ Waiting for database...");
+      await new Promise(res => setTimeout(res, 3000));
+    }
   }
 };
-createUsersTable();
+
+initDB();
+
+
 // Use CORS middleware
 
 app.use(cors({

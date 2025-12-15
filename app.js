@@ -17,11 +17,11 @@ app.use(cors({
     "http://localhost:5173", 
     "http://localhost:3000",
     process.env.FRONTEND_URL, // You can add FRONTEND_URL to your Railway variables
-    "https://burn-nglow-fitness-web.vercel.app/" 
+    "https://burn-nglow-fitness-web.vercel.app" 
   ],
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],
-  credentials: true
+  credentials: false
 }));
 
 app.use(bodyParser.json());
@@ -48,34 +48,41 @@ const db = mysql.createPool({
 
 // 3. INITIALIZE DB (With Better Error Logging)
 const initDB = async () => {
-  let connected = false;
-  while (!connected) {
-    try {
-      await db.query("SELECT 1");
-      connected = true;
-      console.log("✅ Database connected successfully!");
+  try {
+    const conn = await db.getConnection();
+    console.log("✅ Database connected successfully!");
+    conn.release();
 
-      // Create Users Table
-      await db.query(`
-        CREATE TABLE IF NOT EXISTS users (
-          id INT AUTO_INCREMENT PRIMARY KEY,
-          email VARCHAR(255) UNIQUE NOT NULL,
-          name VARCHAR(255) NOT NULL,
-          password VARCHAR(255) NOT NULL,
-          phone VARCHAR(20) NOT NULL,
-          height FLOAT NOT NULL,
-          weight FLOAT NOT NULL,
-          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        )
-      `);
-      console.log("✅ Users table checked/created.");
-      
-    } catch (err) {
-      // THIS LOG WILL SHOW YOU WHY IT IS FAILING
-      console.error("❌ Database Connection Failed:", err.message);
-      console.log("⏳ Retrying in 3 seconds...");
-      await new Promise(res => setTimeout(res, 3000));
-    }
+    // USERS TABLE
+    await db.query(`
+      CREATE TABLE IF NOT EXISTS users (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        email VARCHAR(255) UNIQUE NOT NULL,
+        name VARCHAR(255) NOT NULL,
+        password VARCHAR(255) NOT NULL,
+        phone VARCHAR(20) NOT NULL,
+        height FLOAT NOT NULL,
+        weight FLOAT NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      )
+    `);
+
+    // DIET PLANS TABLE
+    await db.query(`
+      CREATE TABLE IF NOT EXISTS diet_plans (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        category VARCHAR(50) NOT NULL,
+        condition_value VARCHAR(50) NOT NULL,
+        plan JSON NOT NULL
+      )
+    `);
+
+    console.log("✅ Tables checked/created successfully.");
+
+  } catch (err) {
+    console.error("❌ DATABASE INIT FAILED");
+    console.error(err);
+    process.exit(1);
   }
 };
 

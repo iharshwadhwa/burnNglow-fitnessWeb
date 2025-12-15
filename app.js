@@ -16,8 +16,12 @@ const db = mysql.createPool({
   database: process.env.DB_NAME,
   port: process.env.DB_PORT,
   waitForConnections: true,
-  connectionLimit: 10
+  connectionLimit: 10,
+  ssl: {
+    rejectUnauthorized: false
+  }
 });
+
 
 
 // After ensuring the database exists, now connect with the database

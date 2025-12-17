@@ -9,13 +9,14 @@ const jwt = require("jsonwebtoken");
 const app = express();
 const SECRET_KEY = process.env.JWT_SECRET || "fallback_secret_key"; 
 
-// 1. CORS CONFIGURATION
+// =============================================================
+// 1. CORS CONFIGURATION (FIXED FOR VERCEL)
+// =============================================================
 app.use(cors({
   origin: [
-    "http://localhost:5173", 
-    "http://localhost:3000",
-    process.env.FRONTEND_URL, 
-    "https://burn-nglow-fitness-web.vercel.app" 
+    "http://localhost:5173",                     // Local Vite
+    "http://localhost:3000",                     // Local Backend
+    "https://burn-nglow-fitness-web.vercel.app"  // YOUR LIVE VERCEL WEBSITE
   ],
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],
@@ -30,13 +31,14 @@ app.use((req, res, next) => {
   next();
 });
 
-// 2. DATABASE CONNECTION (Updated for Aiven Cloud)
-// We check if DB_URL exists, otherwise we fall back to local variables (optional)
+// =============================================================
+// 2. DATABASE CONNECTION
+// =============================================================
 const dbConfig = process.env.DB_URL 
   ? {
       uri: process.env.DB_URL,
       ssl: {
-        rejectUnauthorized: false // Aiven requires SSL
+        rejectUnauthorized: false // Required for Aiven Cloud
       },
       waitForConnections: true,
       connectionLimit: 5
@@ -89,13 +91,14 @@ const initDB = async () => {
   } catch (err) {
     console.error("❌ DATABASE INIT FAILED");
     console.error(err);
-    // Don't exit process in dev, just log error so server keeps running
   }
 };
 
 initDB();
 
+// =============================================================
 // 4. ROUTES
+// =============================================================
 
 // Get Diet Plan
 app.post("/get-diet", async (req, res) => {

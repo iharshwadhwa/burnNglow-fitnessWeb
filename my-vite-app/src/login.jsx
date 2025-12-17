@@ -2,8 +2,6 @@ import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-
-// --- FIXED: Import the logo image here ---
 import logoImg from './assets/images/01-logo-dark.svg';
 
 function Login() {
@@ -16,6 +14,11 @@ function Login() {
   const [loginStatus, setLoginStatus] = useState(null);
   const navigate = useNavigate();
 
+  // --- FIX START: Define the API URL correctly ---
+  // Use the environment variable, OR fallback to your Render URL directly
+  const API_URL = import.meta.env.VITE_API_URL || "https://burnnglow-fitnessweb.onrender.com"; 
+  // --- FIX END ---
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prevState => ({
@@ -26,10 +29,8 @@ function Login() {
 
   const validateForm = () => {
     const newErrors = {};
-    
     if (!formData.email) newErrors.email = 'Email is required';
     if (!formData.password) newErrors.password = 'Password is required';
-
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -39,21 +40,29 @@ function Login() {
     
     if (validateForm()) {
       try {
-        const response = await axios.post('http://localhost:3000/login', {
+        console.log("Attempting login to:", `${API_URL}/login`); // Debug log
+
+        // --- FIX: Use the API_URL variable instead of localhost ---
+        const response = await axios.post(`${API_URL}/login`, {
           email: formData.email,
           password: formData.password
         });
 
-        // Save token to local storage
         localStorage.setItem('userToken', response.data.token);
-        
         setLoginStatus('success');
         
-        // Redirect to dashboard or home page after successful login
+        // Alert to confirm it worked
+        alert("Login Successful!"); 
         navigate('/');
+        
       } catch (error) {
         setLoginStatus('error');
         console.error('Login failed:', error);
+        
+        // Optional: Alert the user why it failed
+        if(error.response) {
+            alert(`Login Failed: ${error.response.data.error}`);
+        }
       }
     }
   };
@@ -66,7 +75,6 @@ function Login() {
             <div className="card border-0 shadow-sm rounded-3">
               <div className="card-body p-5">
                 <div className="text-center mb-4">
-                  {/* --- FIXED: Used the imported variable (logoImg) instead of the string path --- */}
                   <img 
                     src={logoImg}
                     alt="My Diet Meal Plan Logo" 
@@ -114,23 +122,14 @@ function Login() {
                   
                   <div className="d-flex justify-content-between mb-3">
                     <div className="form-check">
-                      <input 
-                        type="checkbox" 
-                        className="form-check-input" 
-                        id="rememberMe"
-                      />
-                      <label className="form-check-label" htmlFor="rememberMe">
-                        Remember me
-                      </label>
+                      <input type="checkbox" className="form-check-input" id="rememberMe" />
+                      <label className="form-check-label" htmlFor="rememberMe">Remember me</label>
                     </div>
-                    <a href="/forgot-password" className="text-success">Forgot Password?</a>
+                    <a href="/forgot-password" class="text-success">Forgot Password?</a>
                   </div>
                   
                   <div className="d-grid">
-                    <button 
-                      type="submit" 
-                      className="btn btn-success btn-lg rounded-pill shadow-sm"
-                    >
+                    <button type="submit" className="btn btn-success btn-lg rounded-pill shadow-sm">
                       Login
                     </button>
                   </div>

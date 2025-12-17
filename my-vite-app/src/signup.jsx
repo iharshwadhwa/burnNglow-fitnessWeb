@@ -25,7 +25,6 @@ function Signup() {
 
   const validateForm = () => {
     const newErrors = {};
-    
     if (!formData.email) newErrors.email = 'Email is required';
     if (!formData.name) newErrors.name = 'Name is required';
     if (!formData.password) newErrors.password = 'Password is required';
@@ -43,7 +42,16 @@ function Signup() {
     
     if (validateForm()) {
       try {
-        const response = await axios.post('http://localhost:3000/signup', {
+        // --- FIX START ---
+        // Fallback to localhost:3000 if the .env variable is missing
+        const base_url = import.meta.env.VITE_API_URL || "http://localhost:3000";
+        
+        // Remove trailing slash if it exists to prevent //signup
+        const clean_url = base_url.endsWith('/') ? base_url.slice(0, -1) : base_url;
+
+        console.log("🚀 Attempting request to:", `${clean_url}/signup`);
+
+        const response = await axios.post(`${clean_url}/signup`, {        
           email: formData.email,
           name: formData.name,
           password: formData.password,
@@ -51,12 +59,17 @@ function Signup() {
           height: parseFloat(formData.height),
           weight: parseFloat(formData.weight)
         });
+        // --- FIX END ---
 
-        setSubmitStatus('success');
-        // Optional: Redirect to login or dashboard
+        if (response.status === 200 || response.status === 201) {
+            setSubmitStatus('success');
+            // Reset form on success
+            setFormData({ email: '', name: '', password: '', phone: '', height: '', weight: '' });
+        }
       } catch (error) {
         setSubmitStatus('error');
-        console.error('Signup failed:', error);
+        // This log is crucial for debugging the 404
+        console.error('Signup failed details:', error.response ? error.response.data : error.message);
       }
     }
   };
@@ -71,15 +84,11 @@ function Signup() {
                 <h2 className="text-center fw-bold text-success mb-4">Create Your Account</h2>
                 
                 {submitStatus === 'success' && (
-                  <div className="alert alert-success">
-                    Account created successfully!
-                  </div>
+                  <div className="alert alert-success">Account created successfully!</div>
                 )}
                 
                 {submitStatus === 'error' && (
-                  <div className="alert alert-danger">
-                    Signup failed. Please try again.
-                  </div>
+                  <div className="alert alert-danger">Signup failed. Check console for details.</div>
                 )}
                 
                 <form onSubmit={handleSubmit}>
@@ -88,8 +97,7 @@ function Signup() {
                     <input 
                       type="text" 
                       className={`form-control ${errors.name ? 'is-invalid' : ''}`}
-                      id="name"
-                      name="name"
+                      id="name" name="name"
                       value={formData.name}
                       onChange={handleChange}
                       placeholder="Enter your full name"
@@ -102,8 +110,7 @@ function Signup() {
                     <input 
                       type="email" 
                       className={`form-control ${errors.email ? 'is-invalid' : ''}`}
-                      id="email"
-                      name="email"
+                      id="email" name="email"
                       value={formData.email}
                       onChange={handleChange}
                       placeholder="Enter your email"
@@ -116,8 +123,7 @@ function Signup() {
                     <input 
                       type="password" 
                       className={`form-control ${errors.password ? 'is-invalid' : ''}`}
-                      id="password"
-                      name="password"
+                      id="password" name="password"
                       value={formData.password}
                       onChange={handleChange}
                       placeholder="Create a strong password"
@@ -130,8 +136,7 @@ function Signup() {
                     <input 
                       type="tel" 
                       className={`form-control ${errors.phone ? 'is-invalid' : ''}`}
-                      id="phone"
-                      name="phone"
+                      id="phone" name="phone"
                       value={formData.phone}
                       onChange={handleChange}
                       placeholder="Enter your phone number"
@@ -143,14 +148,11 @@ function Signup() {
                     <div className="col-md-6 mb-3">
                       <label htmlFor="height" className="form-label">Height (cm)</label>
                       <input 
-                        type="number" 
-                        step="0.1"
+                        type="number" step="0.1"
                         className={`form-control ${errors.height ? 'is-invalid' : ''}`}
-                        id="height"
-                        name="height"
+                        id="height" name="height"
                         value={formData.height}
                         onChange={handleChange}
-                        placeholder="Your height"
                       />
                       {errors.height && <div className="invalid-feedback">{errors.height}</div>}
                     </div>
@@ -158,32 +160,20 @@ function Signup() {
                     <div className="col-md-6 mb-3">
                       <label htmlFor="weight" className="form-label">Weight (kg)</label>
                       <input 
-                        type="number" 
-                        step="0.1"
+                        type="number" step="0.1"
                         className={`form-control ${errors.weight ? 'is-invalid' : ''}`}
-                        id="weight"
-                        name="weight"
+                        id="weight" name="weight"
                         value={formData.weight}
                         onChange={handleChange}
-                        placeholder="Your weight"
                       />
                       {errors.weight && <div className="invalid-feedback">{errors.weight}</div>}
                     </div>
                   </div>
                   
                   <div className="d-grid">
-                    <button 
-                      type="submit" 
-                      className="btn btn-success btn-lg rounded-pill shadow-sm"
-                    >
+                    <button type="submit" className="btn btn-success btn-lg rounded-pill shadow-sm">
                       Create Account
                     </button>
-                  </div>
-                  
-                  <div className="text-center mt-3">
-                    <p className="small text-secondary">
-                      Already have an account? <a href="/login" className="text-success">Login</a>
-                    </p>
                   </div>
                 </form>
               </div>

@@ -7,7 +7,6 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
 const app = express();
-const PORT = process.env.PORT || 3000;
 const SECRET_KEY = process.env.JWT_SECRET || "fallback_secret_key"; // Fallback to prevent crash if env missing
 
 // 1. CORS CONFIGURATION
@@ -41,9 +40,6 @@ const db = mysql.createPool({
   port: process.env.DB_PORT || 3306,
   waitForConnections: true,
   connectionLimit: 10,
-  ssl: {
-    rejectUnauthorized: false // Required for many cloud databases like Railway/PlanetScale
-  }
 });
 
 // 3. INITIALIZE DB (With Better Error Logging)
@@ -179,6 +175,10 @@ app.post("/login", async (req, res) => {
 });
 
 // Start Server
+const PORT = process.env.PORT || 3000;
+
 app.listen(PORT, () => {
   console.log(`✅ Server running on port ${PORT}`);
 });
+
+module.exports = app; // ADD THIS LINE FOR VERCEL

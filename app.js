@@ -228,8 +228,11 @@ app.post("/login", async (req, res) => {
 // Start Server
 const PORT = process.env.PORT || 3000;
 
+
+
 app.listen(PORT, () => {
   console.log(`✅ Server running on port ${PORT}`);
+  console.log(`🚀 VERSION 2.0 (The Fix is Live)`); // <--- Add this!
 });
 
 module.exports = app;

@@ -145,16 +145,31 @@ app.post("/get-diet", async (req, res) => {
 });
 
 // Signup
+// FIND THIS SECTION IN YOUR APP.JS AND REPLACE IT
 app.post("/signup", async (req, res) => {
-  const { email, name, password, phone, height, weight } = req.body;
-  if (!email || !name || !password || !phone || !height || !weight) {
+  // 1. Extract raw data
+  const rawEmail = req.body.email;
+  const rawPassword = req.body.password;
+  
+  // 2. Validate existence FIRST
+  if (!rawEmail || !rawPassword || !req.body.name) {
     return res.status(400).json({ error: "All fields are required." });
   }
+
+  // 3. CLEAN THE DATA (The Fix!)
+  const email = rawEmail.trim().toLowerCase(); // " User@Gmail.com " -> "user@gmail.com"
+  const password = rawPassword.trim();         // " 12345 " -> "12345"
+  
+  // Extract the rest
+  const { name, phone, height, weight } = req.body;
+
   try {
     const [existingUser] = await db.query("SELECT * FROM users WHERE email = ?", [email]);
     if (existingUser.length > 0) return res.status(400).json({ error: "Email already registered." });
 
     const hashedPassword = await bcrypt.hash(password, 10);
+    
+    // ... rest of your save logic ...
     await db.query(
       "INSERT INTO users (email, name, password, phone, height, weight) VALUES (?, ?, ?, ?, ?, ?)",
       [email, name, hashedPassword, phone, height, weight]
@@ -168,44 +183,39 @@ app.post("/signup", async (req, res) => {
 
 // Login
 // DEBUG LOGIN ROUTE - Replace your existing login with this
+// FIND THIS SECTION IN YOUR APP.JS AND REPLACE IT
 app.post("/login", async (req, res) => {
-  console.log("-----------------------------------------");
-  console.log("🕵️ LOGIN ATTEMPT RECEIVED");
-  
-  const { email, password } = req.body;
-  console.log(`📧 Email provided: '${email}'`);
-  console.log(`🔑 Password provided: '${password}'`); // (Don't worry, this is just local logs)
+  console.log("🕵️ LOGIN ATTEMPT");
 
-  if (!email || !password) {
-    console.log("❌ Missing email or password");
+  // 1. Validate existence
+  if (!req.body.email || !req.body.password) {
     return res.status(400).json({ error: "Email and password are required." });
   }
+
+  // 2. CLEAN THE DATA (The Fix!)
+  const email = req.body.email.trim().toLowerCase();
+  const password = req.body.password.trim();
 
   try {
     // 1. Check if user exists
     const [users] = await db.query("SELECT * FROM users WHERE email = ?", [email]);
-    console.log(`🔎 Database Search Result: Found ${users.length} user(s)`);
-
+    
     if (users.length === 0) {
-      console.log("❌ User NOT found in database. (Check if you are connecting to the right DB!)");
-      return res.status(401).json({ error: "DEBUG: User not found in DB" });
+      console.log("❌ User NOT found in database.");
+      return res.status(401).json({ error: "Invalid credentials" });
     }
 
     const user = users[0];
-    console.log(`👤 User ID: ${user.id}`);
-    console.log(`🔒 Stored Hash in DB: '${user.password}'`);
 
     // 2. Compare Password
     const isMatch = await bcrypt.compare(password, user.password);
-    console.log(`⚖️ Password Match Result: ${isMatch}`);
 
     if (!isMatch) {
-      console.log("❌ Password did NOT match hash.");
-      return res.status(401).json({ error: "DEBUG: Password mismatch" });
+      console.log("❌ Password mismatch.");
+      return res.status(401).json({ error: "Invalid credentials" });
     }
 
     // 3. Success
-    console.log("✅ Login Successful! Generating Token...");
     const token = jwt.sign({ userId: user.id, email: user.email }, SECRET_KEY, { expiresIn: "1h" });
     res.json({ message: "Login successful!", token });
 

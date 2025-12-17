@@ -14,14 +14,14 @@
     --transition: all 0.3s ease;
   }
   
-  body {
+  /* body {
     font-family: 'Roboto', 'Segoe UI', sans-serif;
     color: var(--text-dark);
     background-color: var(--background-light);
     line-height: 1.6;
     margin: 0;
     padding: 0;
-  }
+  } */
   
   /* Navigation */
   .navbar {
@@ -272,14 +272,14 @@
 
   /* ===== Diet Planner Page Wrapper ===== */
 
-.diet-planner-page {
+/* .diet-planner-page {
   min-height: 100vh;
   background: linear-gradient(135deg, #7cf0c8, #87ceeb);
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 40px 15px;
-}
+} */
 
 .diet-planner-page .container {
   max-width: 900px;

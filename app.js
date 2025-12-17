@@ -167,22 +167,50 @@ app.post("/signup", async (req, res) => {
 });
 
 // Login
+// DEBUG LOGIN ROUTE - Replace your existing login with this
 app.post("/login", async (req, res) => {
+  console.log("-----------------------------------------");
+  console.log("🕵️ LOGIN ATTEMPT RECEIVED");
+  
   const { email, password } = req.body;
-  if (!email || !password) return res.status(400).json({ error: "Email and password are required." });
+  console.log(`📧 Email provided: '${email}'`);
+  console.log(`🔑 Password provided: '${password}'`); // (Don't worry, this is just local logs)
+
+  if (!email || !password) {
+    console.log("❌ Missing email or password");
+    return res.status(400).json({ error: "Email and password are required." });
+  }
 
   try {
+    // 1. Check if user exists
     const [users] = await db.query("SELECT * FROM users WHERE email = ?", [email]);
-    if (users.length === 0) return res.status(401).json({ error: "Invalid email or password." });
+    console.log(`🔎 Database Search Result: Found ${users.length} user(s)`);
+
+    if (users.length === 0) {
+      console.log("❌ User NOT found in database. (Check if you are connecting to the right DB!)");
+      return res.status(401).json({ error: "DEBUG: User not found in DB" });
+    }
 
     const user = users[0];
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) return res.status(401).json({ error: "Invalid email or password." });
+    console.log(`👤 User ID: ${user.id}`);
+    console.log(`🔒 Stored Hash in DB: '${user.password}'`);
 
+    // 2. Compare Password
+    const isMatch = await bcrypt.compare(password, user.password);
+    console.log(`⚖️ Password Match Result: ${isMatch}`);
+
+    if (!isMatch) {
+      console.log("❌ Password did NOT match hash.");
+      return res.status(401).json({ error: "DEBUG: Password mismatch" });
+    }
+
+    // 3. Success
+    console.log("✅ Login Successful! Generating Token...");
     const token = jwt.sign({ userId: user.id, email: user.email }, SECRET_KEY, { expiresIn: "1h" });
     res.json({ message: "Login successful!", token });
+
   } catch (err) {
-    console.error("Login Error:", err);
+    console.error("❌ SERVER ERROR in Login:", err);
     res.status(500).json({ error: "Server error" });
   }
 });

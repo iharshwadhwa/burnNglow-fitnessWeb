@@ -228,7 +228,32 @@ app.post("/login", async (req, res) => {
 // Start Server
 const PORT = process.env.PORT || 3000;
 
+// --- SPY ROUTE (Delete this after fixing) ---
+// Usage: https://your-backend.onrender.com/debug-user?email=your@email.com
+app.get("/debug-user", async (req, res) => {
+  const email = req.query.email;
+  
+  try {
+    const [users] = await db.query("SELECT * FROM users WHERE email = ?", [email]);
+    
+    if (users.length === 0) {
+      return res.json({ status: "User Not Found", email: email });
+    }
 
+    const user = users[0];
+    
+    res.json({
+      status: "User Found",
+      email: user.email,
+      stored_password_hash: user.password, // This is what we need to see!
+      hash_length: user.password.length,   // This number is the key clue
+      phone: user.phone
+    });
+    
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
 
 app.listen(PORT, () => {
   console.log(`✅ Server running on port ${PORT}`);

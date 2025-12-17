@@ -1,3 +1,17 @@
+/* 1. Import the font from Google Fonts (Must be the very first line) */
+@import url('https://fonts.googleapis.com/css2?family=Special+Elite&display=swap');
+/* Note: I replaced 'Special Gothic' with 'Special Elite' as it is a common real Google font. 
+   If you have a specific custom font file, ignore this line. */
+
+/* 2. Define your Color Variables */
+:root {
+  --primary-green: #56ab2f;       /* Your main green */
+  --primary-hover: #488a27;       /* Darker green for hover */
+  --text-dark: #2c3e50;           /* Dark blue-grey text */
+  --bg-gradient: linear-gradient(to right, #84fab0 0%, #8fd3f4 100%);
+  --shadow-light: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
 /* App.css */
 * {
   margin: 0;
@@ -7,10 +21,11 @@
 }
 
  body {
-  /* background: linear-gradient(to right, #84fab0 0%,  #8fd3f4 100%); */
+  /* Use the variable we made, or uncomment your old gradient */
+  background: var(--bg-gradient); 
   color: #333;
   min-height: 100vh;
-} 
+}
 .special-gothic-expanded-one-regular {
   font-family: 'Special Gothic Expanded One', sans-serif;
 }
@@ -29,8 +44,7 @@
 .header {
   text-align: center;
   color: #fff;
-  background-color: rgba(0, 0, 0, 0.6);
-  padding: 2rem;
+background-color: var(--text-dark); /* Changed from rgba(0,0,0,0.6) to match theme */  padding: 2rem;
   border-radius: 10px;
   margin-bottom: 1rem;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -65,6 +79,7 @@
 .dropdown label {
   font-weight: 600;
   font-size: 1.1rem;
+  color: var(--text-dark); /* Replaces #2c3e50 */
   color: #2c3e50;
 }
 
@@ -79,15 +94,14 @@
 
 .dropdown select:focus {
   outline: none;
-  border-color: #56ab2f;
-  box-shadow: 0 0 0 2px rgba(168, 224, 99, 0.3);
+  border-color: var(--primary-green); /* Replaces #56ab2f */
+  box-shadow: 0 0 0 2px rgba(86, 171, 47, 0.3); /* Optional: adjusted shadow color */
 }
 
 .submit-btn {
   margin-top: 1rem;
   padding: 1rem;
-  background-color: #56ab2f;
-  color: white;
+background-color: var(--primary-green); /* Replaces #56ab2f */  color: white;
   border: none;
   border-radius: 6px;
   font-size: 1.1rem;
@@ -98,7 +112,7 @@
 }
 
 .submit-btn:hover {
-  background-color: #488a27;
+  background-color: var(--primary-hover); /* Replaces #488a27 */
   transform: translateY(-2px);
 }
 
@@ -126,10 +140,10 @@
 }
 
 .recommendations h2 {
-  color: #2c3e50;
-  margin-bottom: 1.5rem;
+color: var(--text-dark);          /* Replaces #2c3e50 */
+margin-bottom: 1.5rem;
   text-align: center;
-  border-bottom: 2px solid #56ab2f;
+border-bottom: 2px solid var(--primary-green); /* Replaces #56ab2f */
   padding-bottom: 0.5rem;
 }
 
@@ -138,7 +152,7 @@
 }
 
 .recommendation-section h3 {
-  color: #56ab2f;
+color: var(--primary-green);      /* Replaces #56ab2f */
   margin-bottom: 1rem;
   font-size: 1.3rem;
 }
@@ -152,7 +166,7 @@
   padding: 0.8rem;
   background-color: #f8f9fa;
   border-radius: 6px;
-  border-left: 4px solid #56ab2f;
+  border-left: 4px solid var(--primary-green); /* Replaces #56ab2f */
 }
 
 .recommendation-section li strong {
@@ -164,6 +178,11 @@
     padding: 1rem;
   }
   
+  /* NEW: Shrink the header padding on mobile */
+  .header {
+    padding: 1.5rem 1rem; 
+  }
+
   .header h1 {
     font-size: 1.8rem;
   }

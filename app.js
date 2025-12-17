@@ -7,15 +7,14 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
 const app = express();
-const SECRET_KEY = process.env.JWT_SECRET || "fallback_secret_key"; // Fallback to prevent crash if env missing
+const SECRET_KEY = process.env.JWT_SECRET || "fallback_secret_key"; 
 
 // 1. CORS CONFIGURATION
-// Replace "https://your-project.vercel.app" with your ACTUAL Vercel URL
 app.use(cors({
   origin: [
     "http://localhost:5173", 
     "http://localhost:3000",
-    process.env.FRONTEND_URL, // You can add FRONTEND_URL to your Railway variables
+    process.env.FRONTEND_URL, 
     "https://burn-nglow-fitness-web.vercel.app" 
   ],
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
@@ -25,28 +24,40 @@ app.use(cors({
 
 app.use(bodyParser.json());
 
-// Logging Middleware (Helps debug requests)
+// Logging Middleware
 app.use((req, res, next) => {
   console.log(`➡️  ${req.method} ${req.url}`);
   next();
 });
 
-// 2. DATABASE CONNECTION
-const db = mysql.createPool({
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
-  port: process.env.DB_PORT || 3306,
-  waitForConnections: true,
-  connectionLimit: 10,
-});
+// 2. DATABASE CONNECTION (Updated for Aiven Cloud)
+// We check if DB_URL exists, otherwise we fall back to local variables (optional)
+const dbConfig = process.env.DB_URL 
+  ? {
+      uri: process.env.DB_URL,
+      ssl: {
+        rejectUnauthorized: false // Aiven requires SSL
+      },
+      waitForConnections: true,
+      connectionLimit: 5
+    }
+  : {
+      host: process.env.DB_HOST,
+      user: process.env.DB_USER,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_NAME,
+      port: process.env.DB_PORT || 3306,
+      waitForConnections: true,
+      connectionLimit: 10
+    };
 
-// 3. INITIALIZE DB (With Better Error Logging)
+const db = mysql.createPool(dbConfig);
+
+// 3. INITIALIZE DB
 const initDB = async () => {
   try {
     const conn = await db.getConnection();
-    console.log("✅ Database connected successfully!");
+    console.log("✅ Database connected successfully to Cloud!");
     conn.release();
 
     // USERS TABLE
@@ -78,11 +89,10 @@ const initDB = async () => {
   } catch (err) {
     console.error("❌ DATABASE INIT FAILED");
     console.error(err);
-    process.exit(1);
+    // Don't exit process in dev, just log error so server keeps running
   }
 };
 
-// Run the DB check
 initDB();
 
 // 4. ROUTES
@@ -181,4 +191,4 @@ app.listen(PORT, () => {
   console.log(`✅ Server running on port ${PORT}`);
 });
 
-module.exports = app; // ADD THIS LINE FOR VERCEL
+module.exports = app;

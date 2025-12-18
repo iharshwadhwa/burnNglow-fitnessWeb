@@ -76,9 +76,7 @@ function BMICalculator() {
               <li className="nav-item">
                 <Link className="nav-link active px-3" to="/bmi-calculator">Calculator</Link>
               </li>
-              <li className="nav-item">
-                <Link className="nav-link px-3" to="#">Pricing</Link>
-              </li>
+              {/* Pricing Button Removed Here */}
               <li className="nav-item">
                 <Link className="nav-link px-3" to="#">About</Link>
               </li>

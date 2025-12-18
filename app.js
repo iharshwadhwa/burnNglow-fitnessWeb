@@ -104,43 +104,70 @@ initDB();
 // =============================================================
 
 // Get Diet Plan
+// =============================================================
+// SMART DIET PLAN GENERATOR (MERGE LOGIC)
+// =============================================================
 app.post("/get-diet", async (req, res) => {
   const { allergy, age, goal } = req.body;
   let conditions = [];
   let values = [];
-  let query = "SELECT condition_value, plan FROM diet_plans WHERE";
+  
+  // 1. Fetch ALL potentially matching plans
+  let query = "SELECT category, condition_value, plan FROM diet_plans WHERE";
 
   if (allergy) { conditions.push(`(category = 'allergy' AND condition_value = ?)`); values.push(allergy); }
   if (age) { conditions.push(`(category = 'age' AND condition_value = ?)`); values.push(age); }
   if (goal) { conditions.push(`(category = 'goal' AND condition_value = ?)`); values.push(goal); }
 
   if (conditions.length === 0) {
-    return res.status(400).json({ error: "Provide at least one filter (allergy, age, or goal)." });
+    return res.status(400).json({ error: "Provide at least one filter." });
   }
 
   query += ` ${conditions.join(" OR ")}`;
 
   try {
     const [results] = await db.query(query, values);
+    
     if (results.length === 0) return res.status(200).json([]);
 
-    const formattedResults = results.map((result) => {
+    // 2. Process the raw rows
+    const parsedResults = results.map((result) => {
       let plan = result.plan;
       if (typeof plan === "string") {
-        try {
-            plan = JSON.parse(plan);
-        } catch (e) {
-            console.error("Error parsing JSON plan", e);
-        }
+        try { plan = JSON.parse(plan); } catch (e) { }
       }
       return {
+        category: result.category,
         condition_value: result.condition_value,
-        meal_1: plan?.["Meal 1"] || "N/A",
-        meal_3: plan?.["Meal 3"] || "N/A",
-        post_workout: plan?.["Post-Workout"] || "N/A"
+        meal_1: plan?.["Meal 1"] || "Balanced Breakfast",
+        meal_3: plan?.["Meal 3"] || "Healthy Lunch",
+        post_workout: plan?.["Post-Workout"] || "Light Snack"
       };
     });
-    res.json(formattedResults);
+
+    // 3. THE SMART MERGE LOGIC 🧠
+    // We create ONE plan by picking the best parts of each result
+    const goalPlan = parsedResults.find(r => r.category === 'goal');
+    const agePlan = parsedResults.find(r => r.category === 'age');
+    const allergyPlan = parsedResults.find(r => r.category === 'allergy');
+
+    const finalPlan = {
+      // Create a fancy title based on what we found
+      condition_value: goalPlan ? `${goalPlan.condition_value} Plan` : "Customized Plan",
+      
+      // BREAKFAST: Comes from GOAL (Lean vs Bulk)
+      meal_1: goalPlan ? goalPlan.meal_1 : (agePlan ? agePlan.meal_1 : "Oats & Fruits"),
+      
+      // LUNCH: Comes from AGE (Varied diet for different ages)
+      meal_3: agePlan ? agePlan.meal_3 : (allergyPlan ? allergyPlan.meal_3 : "Rice & Chicken"),
+      
+      // POST-WORKOUT: Comes from ALLERGY (Safety First!) or Goal
+      post_workout: allergyPlan ? allergyPlan.post_workout : (goalPlan ? goalPlan.post_workout : "Protein Shake")
+    };
+
+    // Return as an array of 1 (so your frontend .map() still works perfectly)
+    res.json([finalPlan]); 
+
   } catch (err) {
     console.error("Error fetching diet:", err);
     res.status(500).json({ error: err.message });

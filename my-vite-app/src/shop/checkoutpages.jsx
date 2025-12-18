@@ -1,64 +1,113 @@
-import React from "react";
-import { useCart } from "./catcontext"; // Import the useCart hook
-import { Link } from "react-router-dom";
+// src/shop/checkoutpages.jsx
+import React, { useState } from "react";
+import { useCart } from "./catcontext";
+import { useNavigate } from "react-router-dom";
+import "./checkout.css";
 
 const CheckoutPage = () => {
-  const { cartItems, removeFromCart } = useCart(); // Access cartItems and removeFromCart from CartContext
+  const { cartItems } = useCart();
+  const navigate = useNavigate();
 
-  const calculateTotal = () => {
-    return cartItems.reduce((total, item) => total + parseFloat(item.price.replace("₹", "")), 0);
+  // Form State
+  const [formData, setFormData] = useState({
+    fullName: "",
+    address: "",
+    city: "",
+    zip: "",
+    phone: ""
+  });
+
+  // Calculate Total
+  const totalPrice = cartItems.reduce((total, item) => {
+    const priceNumber = parseFloat(item.price.replace(/[₹,]/g, ""));
+    return total + priceNumber;
+  }, 0);
+
+  const handleInputChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handlePlaceOrder = (e) => {
+    e.preventDefault();
+    // Here we will eventually send data to the backend
+    alert(`Order Placed Successfully! 🎉\nTotal: ₹${totalPrice.toLocaleString()}\nShipping to: ${formData.address}`);
+    navigate("/"); // Go back to Dashboard
   };
 
   return (
-    <div className="container mt-5">
-      <h2 className="text-center mb-4">Checkout</h2>
-      {cartItems.length === 0 ? (
-        <div className="alert alert-warning text-center">
-          Your cart is empty. Please add items to your cart.
+    <div className="checkout-page">
+      <div className="checkout-container">
+        
+        {/* Left Side: Shipping Form */}
+        <div className="checkout-form">
+          <h2>🚚 Shipping Details</h2>
+          <form onSubmit={handlePlaceOrder}>
+            <div className="form-group">
+              <label>Full Name</label>
+              <input 
+                type="text" name="fullName" required 
+                placeholder="John Doe"
+                onChange={handleInputChange} 
+              />
+            </div>
+            <div className="form-group">
+              <label>Phone Number</label>
+              <input 
+                type="tel" name="phone" required 
+                placeholder="+91 98765 43210"
+                onChange={handleInputChange} 
+              />
+            </div>
+            <div className="form-group">
+              <label>Address</label>
+              <textarea 
+                name="address" rows="3" required 
+                placeholder="Street, House No, Landmark"
+                onChange={handleInputChange}
+              ></textarea>
+            </div>
+            <div className="form-group">
+              <label>City</label>
+              <input 
+                type="text" name="city" required 
+                placeholder="New Delhi"
+                onChange={handleInputChange} 
+              />
+            </div>
+            <div className="form-group">
+              <label>Zip Code</label>
+              <input 
+                type="text" name="zip" required 
+                placeholder="110001"
+                onChange={handleInputChange} 
+              />
+            </div>
+            
+            {/* Mobile View Button (Hidden on Desktop usually, but good for access) */}
+          </form>
         </div>
-      ) : (
-        <div>
-          <div className="row">
-            {/* Display cart items */}
-            {cartItems.map((item) => (
-              <div className="col-md-4 mb-4" key={item.id}>
-                <div className="card shadow-sm" style={{ borderRadius: "10px" }}>
-                  <img
-                    src={item.image}
-                    alt={item.name}
-                    className="card-img-top"
-                    style={{ height: "200px", objectFit: "cover", borderTopLeftRadius: "10px", borderTopRightRadius: "10px" }}
-                  />
-                  <div className="card-body">
-                    <h5 className="card-title">{item.name}</h5>
-                    <p className="card-text">{item.description}</p>
-                    <p className="card-text font-weight-bold">{item.price}</p>
-                    <button
-                      className="btn btn-danger btn-sm"
-                      onClick={() => removeFromCart(item.id)} // Pass item.id to correctly remove the item
-                    >
-                      Remove
-                    </button>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
+
+        {/* Right Side: Order Summary */}
+        <div className="order-summary">
+          <h2>📦 Order Summary</h2>
+          {cartItems.map((item, index) => (
+            <div key={index} className="summary-item">
+              <span>{item.name}</span>
+              <span>{item.price}</span>
+            </div>
+          ))}
           
-          <div className="d-flex justify-content-between mt-4">
-            <h3>Total: ₹{calculateTotal()}</h3>
-            <Link to="/protein" className="btn btn-secondary">
-              Continue Shopping
-            </Link>
+          <div className="summary-total">
+            <span>Total Amount</span>
+            <span>₹{totalPrice.toLocaleString()}</span>
           </div>
 
-          <div className="mt-4 text-center">
-            <button className="btn btn-success btn-lg">
-              Complete Purchase
-            </button>
-          </div>
+          <button className="place-order-btn" onClick={handlePlaceOrder}>
+            Place Order ✅
+          </button>
         </div>
-      )}
+
+      </div>
     </div>
   );
 };

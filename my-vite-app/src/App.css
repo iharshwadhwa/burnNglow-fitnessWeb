@@ -191,3 +191,64 @@ color: var(--primary-green);      /* Replaces #56ab2f */
     font-size: 1rem;
   }
 }
+/* --- START: Beautiful Shop Menu Styles --- */
+
+/* 1. The Glass Box Container */
+.custom-shop-menu {
+  background: rgba(255, 255, 255, 0.95) !important; /* Frosted Glass */
+  backdrop-filter: blur(10px) !important;          /* Blur effect */
+  border: 1px solid rgba(255, 255, 255, 0.5) !important;
+  border-radius: 15px !important;                  /* Smooth corners */
+  padding: 12px !important;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1) !important;
+  border-top: 4px solid #56ab2f !important;        /* Green top bar */
+  margin-top: 15px !important;                     /* Space from navbar */
+  min-width: 200px;
+}
+
+/* 2. The Arrow pointing up to 'Shop' */
+.custom-shop-menu::before {
+  content: '';
+  position: absolute;
+  top: -10px;
+  left: 20px;
+  border-width: 0 10px 10px 10px;
+  border-style: solid;
+  border-color: transparent transparent #56ab2f transparent;
+}
+
+/* 3. The Menu Items */
+.custom-shop-menu .dropdown-item {
+  color: #333 !important;
+  font-weight: 500;
+  padding: 10px 15px !important;
+  border-radius: 8px;
+  transition: all 0.2s ease-in-out;
+  margin-bottom: 4px;
+}
+
+/* 4. Hover Effect (Green Glow) */
+.custom-shop-menu .dropdown-item:hover {
+  background: linear-gradient(to right, #e8f5e9, #ffffff) !important;
+  color: #2e7d32 !important;
+  transform: translateX(5px); /* Slide right animation */
+  padding-left: 20px !important;
+}
+
+/* 5. Smooth Fade In Animation */
+@keyframes slideUpFade {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-menu {
+  animation: slideUpFade 0.3s ease-out forwards;
+}
+
+/* --- END: Shop Menu Styles --- */

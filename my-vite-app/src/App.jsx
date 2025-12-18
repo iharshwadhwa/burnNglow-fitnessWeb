@@ -1,6 +1,8 @@
 import React from 'react';
 import './App.css';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
+
+// --- Imports ---
 import Calculate from './Calculator';
 import Dashboard from './Dashboard';
 import Signup from './signup';
@@ -9,14 +11,16 @@ import Exercise from './exercise';
 import BMICalculator from './BMI';
 import CaloriesCalculator from './calorie';
 import WaterCalculator from './watercalc';
+import About from './about'; // ✅ Added About Page Import
 
+// --- Shop Imports ---
 import Protein from './shop/protein';
 import Fatburner from './shop/fatburner';
 import Creatine from './shop/creatine';
 import Vitamin from './shop/vitamin';
-import CartPage from './shop/cartpage'; // ✅ Import CartPage
-import CheckoutPage from './shop/checkoutpages'; // ✅ Import CheckoutPage
-import { CartProvider } from "./shop/catcontext"; // ✅ Import the CartProvider
+import CartPage from './shop/cartpage';
+import CheckoutPage from './shop/checkoutpages';
+import { CartProvider } from "./shop/catcontext";
 
 // Protected Route Component
 const ProtectedRoute = ({ children }) => {
@@ -43,7 +47,7 @@ const ReverseProtectedRoute = ({ children }) => {
 function App() {
   return (
     <Router>
-      <CartProvider> {/* ✅ Wrap everything inside CartProvider */}
+      <CartProvider>
         <Routes>
           {/* Public Routes */}
           <Route
@@ -72,6 +76,17 @@ function App() {
               </ProtectedRoute>
             }
           />
+          
+          {/* ✅ ABOUT PAGE ROUTE ADDED HERE */}
+          <Route
+            path="/about"
+            element={
+              <ProtectedRoute>
+                <About />
+              </ProtectedRoute>
+            }
+          />
+
           <Route
             path="/shop/protein"
             element={

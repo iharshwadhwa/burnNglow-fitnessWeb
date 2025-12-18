@@ -12,11 +12,14 @@ const SECRET_KEY = process.env.JWT_SECRET || "fallback_secret_key";
 // =============================================================
 // 1. CORS CONFIGURATION (FIXED FOR VERCEL)
 // =============================================================
+// Inside app.js
+
 app.use(cors({
   origin: [
-    "http://localhost:5173",                     // Local Vite
+    "http://localhost:5173",                     // Standard Vite Port
+    "http://localhost:5174",                     // 👈 ADD THIS (Your current port)
     "http://localhost:3000",                     // Local Backend
-    "https://burn-nglow-fitness-web.vercel.app"  // YOUR LIVE VERCEL WEBSITE
+    "https://burn-nglow-fitness-web.vercel.app"  // Live Vercel Website
   ],
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],
@@ -146,37 +149,49 @@ app.post("/get-diet", async (req, res) => {
 
 // Signup
 // FIND THIS SECTION IN YOUR APP.JS AND REPLACE IT
+// Inside app.js - REPLACE THE EXISTING /signup ROUTE WITH THIS:
+
 app.post("/signup", async (req, res) => {
-  // 1. Extract raw data
+  console.log("📝 Signup Attempt:", req.body); // Log what we receive
+
+  // 1. Extract raw data (Frontend sends 'fullName', so we grab that)
   const rawEmail = req.body.email;
   const rawPassword = req.body.password;
-  
-  // 2. Validate existence FIRST
-  if (!rawEmail || !rawPassword || !req.body.name) {
-    return res.status(400).json({ error: "All fields are required." });
+  const rawName = req.body.fullName; // <--- FIX: Read 'fullName' from frontend
+
+  // 2. Validate existence
+  if (!rawEmail || !rawPassword || !rawName) {
+    console.log("❌ Missing fields:", { rawEmail, rawPassword, rawName });
+    return res.status(400).json({ error: "All fields are required (Name, Email, Password)." });
   }
 
-  // 3. CLEAN THE DATA (The Fix!)
-  const email = rawEmail.trim().toLowerCase(); // " User@Gmail.com " -> "user@gmail.com"
-  const password = rawPassword.trim();         // " 12345 " -> "12345"
-  
+  // 3. CLEAN THE DATA
+  const email = rawEmail.trim().toLowerCase();
+  const password = rawPassword.trim();
+  const name = rawName.trim(); // Clean the name
+
   // Extract the rest
-  const { name, phone, height, weight } = req.body;
+  const { phone, height, weight } = req.body;
 
   try {
+    // Check if user exists
     const [existingUser] = await db.query("SELECT * FROM users WHERE email = ?", [email]);
     if (existingUser.length > 0) return res.status(400).json({ error: "Email already registered." });
 
+    // Hash Password
     const hashedPassword = await bcrypt.hash(password, 10);
     
-    // ... rest of your save logic ...
+    // Save to DB (Map 'name' variable to the 'name' column)
     await db.query(
       "INSERT INTO users (email, name, password, phone, height, weight) VALUES (?, ?, ?, ?, ?, ?)",
       [email, name, hashedPassword, phone, height, weight]
     );
+    
+    console.log("✅ User created successfully!");
     res.status(201).json({ message: "User registered successfully!" });
+
   } catch (err) {
-    console.error("Signup Error:", err);
+    console.error("❌ Signup Error:", err);
     res.status(500).json({ error: "Server error" });
   }
 });

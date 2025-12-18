@@ -1,0 +1,109 @@
+/* src/shop/checkout.css */
+
+.checkout-page {
+  background: linear-gradient(135deg, #4ade80 0%, #3b82f6 100%);
+  min-height: 100vh;
+  padding: 40px 20px;
+  font-family: 'Poppins', sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.checkout-container {
+  background: rgba(255, 255, 255, 0.95);
+  padding: 40px;
+  border-radius: 20px;
+  box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+  width: 100%;
+  max-width: 900px;
+  display: grid;
+  grid-template-columns: 1.5fr 1fr; /* Two columns: Form & Summary */
+  gap: 40px;
+}
+
+.checkout-form h2, .order-summary h2 {
+  font-size: 1.8rem;
+  color: #1f2937;
+  margin-bottom: 25px;
+  border-bottom: 2px solid #eee;
+  padding-bottom: 15px;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: #4b5563;
+}
+
+.form-group input, .form-group textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: border-color 0.3s;
+}
+
+.form-group input:focus, .form-group textarea:focus {
+  border-color: #3b82f6;
+  outline: none;
+}
+
+/* Order Summary Side */
+.order-summary {
+  background: #f9fafb;
+  padding: 25px;
+  border-radius: 15px;
+  height: fit-content;
+}
+
+.summary-item {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 15px;
+  font-size: 0.95rem;
+  color: #666;
+}
+
+.summary-total {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 2px solid #e5e7eb;
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: #059669;
+}
+
+.place-order-btn {
+  background: linear-gradient(to right, #10b981, #059669);
+  color: white;
+  border: none;
+  padding: 15px;
+  width: 100%;
+  font-size: 1.1rem;
+  font-weight: bold;
+  border-radius: 10px;
+  cursor: pointer;
+  margin-top: 25px;
+  transition: transform 0.2s;
+}
+
+.place-order-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+  .checkout-container {
+    grid-template-columns: 1fr; /* Stack them on mobile */
+  }
+}

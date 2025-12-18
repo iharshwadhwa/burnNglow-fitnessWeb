@@ -1,0 +1,142 @@
+/* src/shop/cart.css */
+
+.cart-page {
+  background: linear-gradient(135deg, #4ade80 0%, #3b82f6 100%);
+  min-height: 100vh;
+  padding: 40px 20px;
+  font-family: 'Poppins', sans-serif;
+  color: #333;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.cart-container {
+  background: rgba(255, 255, 255, 0.95);
+  padding: 40px;
+  border-radius: 20px;
+  box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+  width: 100%;
+  max-width: 800px;
+}
+
+.cart-header {
+  text-align: center;
+  margin-bottom: 30px;
+  border-bottom: 2px solid #eee;
+  padding-bottom: 20px;
+}
+
+.cart-header h1 {
+  font-size: 2.5rem;
+  color: #1f2937;
+  font-weight: 800;
+}
+
+.empty-cart-msg {
+  text-align: center;
+  font-size: 1.2rem;
+  color: #666;
+  margin: 40px 0;
+}
+
+/* Cart Items List */
+.cart-item {
+  display: flex;
+  align-items: center;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 15px;
+  margin-bottom: 15px;
+  transition: transform 0.2s;
+}
+
+.cart-item:hover {
+  transform: translateX(5px);
+  border-color: #3b82f6;
+}
+
+.cart-item-img {
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+  margin-right: 20px;
+}
+
+.cart-item-details {
+  flex-grow: 1;
+}
+
+.cart-item h3 {
+  font-size: 1.1rem;
+  margin-bottom: 5px;
+  color: #333;
+}
+
+.cart-item-price {
+  font-weight: bold;
+  color: #059669;
+}
+
+.remove-btn {
+  background: #ef4444;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background 0.2s;
+}
+
+.remove-btn:hover {
+  background: #dc2626;
+}
+
+/* Total Section */
+.cart-total {
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 2px solid #eee;
+  text-align: right;
+}
+
+.cart-total h2 {
+  font-size: 1.8rem;
+  color: #1f2937;
+  margin-bottom: 20px;
+}
+
+.checkout-btn {
+  background: linear-gradient(to right, #f59e0b, #d97706);
+  color: white;
+  border: none;
+  padding: 15px 40px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  border-radius: 50px;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);
+  transition: transform 0.2s;
+}
+
+.checkout-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(245, 158, 11, 0.4);
+}
+
+.back-btn {
+  background: transparent;
+  border: 2px solid #3b82f6;
+  color: #3b82f6;
+  padding: 10px 20px;
+  border-radius: 50px;
+  font-weight: bold;
+  cursor: pointer;
+  margin-right: 15px;
+}
+
+.back-btn:hover {
+  background: #eff6ff;
+}

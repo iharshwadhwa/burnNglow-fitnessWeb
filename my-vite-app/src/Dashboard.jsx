@@ -16,13 +16,12 @@ import jacobImg from "./assets/images/home/jacobprogress.png";
 import adamImg from "./assets/images/home/adamprogress.png";
 import logoDark from "./assets/images/01-logo-dark.svg";
 
-// --- NEW IMPORTS (Fixed by Gemini) ---
-// These were missing from your imports but used in your JSX
+// --- NEW IMPORTS ---
 import customNutritionImg from "./assets/images/home/custom-nutritional-targets.svg";
 import dietaryNeedsImg from "./assets/images/home/dietary-needs.svg";
 import adjustMealImg from "./assets/images/home/adjust-meal-preferences.svg";
 import mealPlanGenImg from "./assets/images/home/meal-plan-generator.svg";
-import recipeSearchImg from "./assets/images/home/powerful-secipe-search.svg"; // Kept your filename typo "secipe"
+import recipeSearchImg from "./assets/images/home/powerful-secipe-search.svg";
 import groceryListImg from "./assets/images/home/grocery-list.svg";
 import downloadPdfImg from "./assets/images/home/download-your-plan-to-pdf.png";
 
@@ -157,7 +156,7 @@ function Dashboard() {
                       >
                         Shop
                       </Link>
-                      <ul className="dropdown-menu" aria-labelledby="shopDropdown">
+                      <ul className="dropdown-menu custom-shop-menu animate-menu" aria-labelledby="shopDropdown">
                         <li>
                           <Link className="dropdown-item" to="/shop/protein">Protein</Link>
                         </li>
@@ -181,7 +180,8 @@ function Dashboard() {
                       <Link className="nav-link px-3" to="/exercise">Excercise</Link>
                     </li>
                     <li className="nav-item">
-                      <Link className="nav-link px-3" to="#">About</Link>
+                      {/* ✅ THIS IS THE FIX 👇 */}
+                      <Link className="nav-link px-3" to="/about">About</Link>
                     </li>
 
                   </ul>

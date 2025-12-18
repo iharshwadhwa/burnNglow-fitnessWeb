@@ -14,10 +14,10 @@ function Login() {
   const [loginStatus, setLoginStatus] = useState(null);
   const navigate = useNavigate();
 
-  // --- FIX START: Define the API URL correctly ---
-  // Use the environment variable, OR fallback to your Render URL directly
-  const API_URL = import.meta.env.VITE_API_URL || "https://burnnglow-fitnessweb.onrender.com"; 
-  // --- FIX END ---
+  // ✅ LOGIC KEPT SAFE: Smart API URL Selector
+  const API_URL = window.location.hostname === "localhost" 
+    ? "http://localhost:3000" 
+    : "https://burnnglow-fitnessweb.onrender.com";
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -40,9 +40,8 @@ function Login() {
     
     if (validateForm()) {
       try {
-        console.log("Attempting login to:", `${API_URL}/login`); // Debug log
+        console.log("Attempting login to:", `${API_URL}/login`); 
 
-        // --- FIX: Use the API_URL variable instead of localhost ---
         const response = await axios.post(`${API_URL}/login`, {
           email: formData.email,
           password: formData.password
@@ -51,7 +50,6 @@ function Login() {
         localStorage.setItem('userToken', response.data.token);
         setLoginStatus('success');
         
-        // Alert to confirm it worked
         alert("Login Successful!"); 
         navigate('/');
         
@@ -59,7 +57,6 @@ function Login() {
         setLoginStatus('error');
         console.error('Login failed:', error);
         
-        // Optional: Alert the user why it failed
         if(error.response) {
             alert(`Login Failed: ${error.response.data.error}`);
         }
@@ -68,16 +65,26 @@ function Login() {
   };
 
   return (
-    <div className="bg-light min-vh-100 d-flex align-items-center">
+    // 👇 STYLE UPDATE: Added Background Image here
+    <div 
+      className="min-vh-100 d-flex align-items-center"
+      style={{
+        background: `linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=1470&auto=format&fit=crop')`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat'
+      }}
+    >
       <div className="container py-5">
         <div className="row justify-content-center">
           <div className="col-lg-5 col-md-7">
-            <div className="card border-0 shadow-sm rounded-3">
+            {/* Added a slight transparency to the card so the bg shows through barely */}
+            <div className="card border-0 shadow-lg rounded-4" style={{ background: 'rgba(255, 255, 255, 0.95)' }}>
               <div className="card-body p-5">
                 <div className="text-center mb-4">
                   <img 
                     src={logoImg}
-                    alt="My Diet Meal Plan Logo" 
+                    alt="Logo" 
                     className="mb-3"
                     style={{ height: "50px" }}
                   />
@@ -93,7 +100,7 @@ function Login() {
                 
                 <form onSubmit={handleSubmit}>
                   <div className="mb-3">
-                    <label htmlFor="email" className="form-label">Email Address</label>
+                    <label htmlFor="email" className="form-label fw-bold">Email Address</label>
                     <input 
                       type="email" 
                       className={`form-control ${errors.email ? 'is-invalid' : ''}`}
@@ -107,7 +114,7 @@ function Login() {
                   </div>
                   
                   <div className="mb-3">
-                    <label htmlFor="password" className="form-label">Password</label>
+                    <label htmlFor="password" className="form-label fw-bold">Password</label>
                     <input 
                       type="password" 
                       className={`form-control ${errors.password ? 'is-invalid' : ''}`}
@@ -125,18 +132,18 @@ function Login() {
                       <input type="checkbox" className="form-check-input" id="rememberMe" />
                       <label className="form-check-label" htmlFor="rememberMe">Remember me</label>
                     </div>
-                    <a href="/forgot-password" class="text-success">Forgot Password?</a>
+                    <a href="/forgot-password" class="text-success text-decoration-none">Forgot Password?</a>
                   </div>
                   
                   <div className="d-grid">
-                    <button type="submit" className="btn btn-success btn-lg rounded-pill shadow-sm">
+                    <button type="submit" className="btn btn-success btn-lg rounded-pill shadow-sm fw-bold">
                       Login
                     </button>
                   </div>
                   
                   <div className="text-center mt-3">
                     <p className="small text-secondary">
-                      Don't have an account? <a href="/signup" className="text-success">Sign Up</a>
+                      Don't have an account? <a href="/signup" className="text-success fw-bold text-decoration-none">Sign Up</a>
                     </p>
                   </div>
                 </form>

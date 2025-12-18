@@ -1,188 +1,115 @@
 import React, { useState } from 'react';
-import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
-function Signup() {
+const Signup = () => {
   const [formData, setFormData] = useState({
+    fullName: '',
     email: '',
-    name: '',
     password: '',
     phone: '',
     height: '',
     weight: ''
   });
+  
+  const [message, setMessage] = useState('');
+  const [isError, setIsError] = useState(false);
+  const navigate = useNavigate();
 
-  const [errors, setErrors] = useState({});
-  const [submitStatus, setSubmitStatus] = useState(null);
+  // ✅ LOGIC KEPT SAFE: Smart API URL Selector
+  const API_URL = window.location.hostname === "localhost" 
+    ? "http://localhost:3000" 
+    : "https://burnnglow-fitnessweb.onrender.com";
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prevState => ({
-      ...prevState,
-      [name]: value
-    }));
-  };
-
-  const validateForm = () => {
-    const newErrors = {};
-    if (!formData.email) newErrors.email = 'Email is required';
-    if (!formData.name) newErrors.name = 'Name is required';
-    if (!formData.password) newErrors.password = 'Password is required';
-    if (formData.password.length < 6) newErrors.password = 'Password must be at least 6 characters';
-    if (!formData.phone) newErrors.phone = 'Phone number is required';
-    if (!formData.height) newErrors.height = 'Height is required';
-    if (!formData.weight) newErrors.weight = 'Weight is required';
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    if (validateForm()) {
-      try {
-        // --- FIX START ---
-        // Fallback to localhost:3000 if the .env variable is missing
-        const base_url = import.meta.env.VITE_API_URL || "http://localhost:3000";
-        
-        // Remove trailing slash if it exists to prevent //signup
-        const clean_url = base_url.endsWith('/') ? base_url.slice(0, -1) : base_url;
+    setMessage('');
+    setIsError(false);
 
-        console.log("🚀 Attempting request to:", `${clean_url}/signup`);
+    try {
+      console.log("Attempting signup to:", `${API_URL}/signup`);
 
-        const response = await axios.post(`${clean_url}/signup`, {        
-          email: formData.email,
-          name: formData.name,
-          password: formData.password,
-          phone: formData.phone,
-          height: parseFloat(formData.height),
-          weight: parseFloat(formData.weight)
-        });
-        // --- FIX END ---
+      // Logic stays exactly the same
+      await axios.post(`${API_URL}/signup`, formData);
+      
+      setMessage('Account created successfully! Redirecting...');
+      setTimeout(() => navigate('/login'), 2000);
 
-        if (response.status === 200 || response.status === 201) {
-            setSubmitStatus('success');
-            // Reset form on success
-            setFormData({ email: '', name: '', password: '', phone: '', height: '', weight: '' });
-        }
-      } catch (error) {
-        setSubmitStatus('error');
-        // This log is crucial for debugging the 404
-        console.error('Signup failed details:', error.response ? error.response.data : error.message);
-      }
+    } catch (error) {
+      console.error("Signup failed:", error);
+      setIsError(true);
+      setMessage(error.response?.data?.error || 'Signup failed. Please try again.');
     }
   };
 
   return (
-    <div className="bg-light min-vh-100 d-flex align-items-center">
-      <div className="container py-5">
-        <div className="row justify-content-center">
-          <div className="col-lg-6 col-md-8">
-            <div className="card border-0 shadow-sm rounded-3">
-              <div className="card-body p-5">
-                <h2 className="text-center fw-bold text-success mb-4">Create Your Account</h2>
-                
-                {submitStatus === 'success' && (
-                  <div className="alert alert-success">Account created successfully!</div>
-                )}
-                
-                {submitStatus === 'error' && (
-                  <div className="alert alert-danger">Signup failed. Check console for details.</div>
-                )}
-                
-                <form onSubmit={handleSubmit}>
-                  <div className="mb-3">
-                    <label htmlFor="name" className="form-label">Full Name</label>
-                    <input 
-                      type="text" 
-                      className={`form-control ${errors.name ? 'is-invalid' : ''}`}
-                      id="name" name="name"
-                      value={formData.name}
-                      onChange={handleChange}
-                      placeholder="Enter your full name"
-                    />
-                    {errors.name && <div className="invalid-feedback">{errors.name}</div>}
-                  </div>
-                  
-                  <div className="mb-3">
-                    <label htmlFor="email" className="form-label">Email Address</label>
-                    <input 
-                      type="email" 
-                      className={`form-control ${errors.email ? 'is-invalid' : ''}`}
-                      id="email" name="email"
-                      value={formData.email}
-                      onChange={handleChange}
-                      placeholder="Enter your email"
-                    />
-                    {errors.email && <div className="invalid-feedback">{errors.email}</div>}
-                  </div>
-                  
-                  <div className="mb-3">
-                    <label htmlFor="password" className="form-label">Password</label>
-                    <input 
-                      type="password" 
-                      className={`form-control ${errors.password ? 'is-invalid' : ''}`}
-                      id="password" name="password"
-                      value={formData.password}
-                      onChange={handleChange}
-                      placeholder="Create a strong password"
-                    />
-                    {errors.password && <div className="invalid-feedback">{errors.password}</div>}
-                  </div>
-                  
-                  <div className="mb-3">
-                    <label htmlFor="phone" className="form-label">Phone Number</label>
-                    <input 
-                      type="tel" 
-                      className={`form-control ${errors.phone ? 'is-invalid' : ''}`}
-                      id="phone" name="phone"
-                      value={formData.phone}
-                      onChange={handleChange}
-                      placeholder="Enter your phone number"
-                    />
-                    {errors.phone && <div className="invalid-feedback">{errors.phone}</div>}
-                  </div>
-                  
-                  <div className="row">
-                    <div className="col-md-6 mb-3">
-                      <label htmlFor="height" className="form-label">Height (cm)</label>
-                      <input 
-                        type="number" step="0.1"
-                        className={`form-control ${errors.height ? 'is-invalid' : ''}`}
-                        id="height" name="height"
-                        value={formData.height}
-                        onChange={handleChange}
-                      />
-                      {errors.height && <div className="invalid-feedback">{errors.height}</div>}
-                    </div>
-                    
-                    <div className="col-md-6 mb-3">
-                      <label htmlFor="weight" className="form-label">Weight (kg)</label>
-                      <input 
-                        type="number" step="0.1"
-                        className={`form-control ${errors.weight ? 'is-invalid' : ''}`}
-                        id="weight" name="weight"
-                        value={formData.weight}
-                        onChange={handleChange}
-                      />
-                      {errors.weight && <div className="invalid-feedback">{errors.weight}</div>}
-                    </div>
-                  </div>
-                  
-                  <div className="d-grid">
-                    <button type="submit" className="btn btn-success btn-lg rounded-pill shadow-sm">
-                      Create Account
-                    </button>
-                  </div>
-                </form>
-              </div>
+    // 👇 STYLE UPDATE: Added Background Image here
+    <div 
+      className="d-flex justify-content-center align-items-center min-vh-100"
+      style={{
+        background: `linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=1470&auto=format&fit=crop')`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat'
+      }}
+    >
+      <div className="card p-4 shadow-lg rounded-4" style={{ maxWidth: '450px', width: '100%', background: 'rgba(255, 255, 255, 0.95)' }}>
+        <h2 className="text-center text-success fw-bold mb-3">Create Your Account</h2>
+        
+        {message && (
+          <div className={`alert ${isError ? 'alert-danger' : 'alert-success'} text-center`}>
+            {message}
+          </div>
+        )}
+
+        <form onSubmit={handleSubmit}>
+          <div className="mb-3">
+            <label className="form-label text-muted fw-bold">Full Name</label>
+            <input type="text" name="fullName" className="form-control" onChange={handleChange} required />
+          </div>
+
+          <div className="mb-3">
+            <label className="form-label text-muted fw-bold">Email Address</label>
+            <input type="email" name="email" className="form-control" onChange={handleChange} required />
+          </div>
+
+          <div className="mb-3">
+            <label className="form-label text-muted fw-bold">Password</label>
+            <input type="password" name="password" className="form-control" onChange={handleChange} required />
+          </div>
+
+          <div className="mb-3">
+            <label className="form-label text-muted fw-bold">Phone Number</label>
+            <input type="tel" name="phone" className="form-control" onChange={handleChange} required />
+          </div>
+
+          <div className="row">
+            <div className="col-6 mb-3">
+              <label className="form-label text-muted fw-bold">Height (cm)</label>
+              <input type="number" name="height" className="form-control" onChange={handleChange} required />
+            </div>
+            <div className="col-6 mb-3">
+              <label className="form-label text-muted fw-bold">Weight (kg)</label>
+              <input type="number" name="weight" className="form-control" onChange={handleChange} required />
             </div>
           </div>
-        </div>
+
+          <button type="submit" className="btn btn-success w-100 rounded-pill py-2 fw-bold shadow-sm">
+            Create Account
+          </button>
+        </form>
+        
+        <p className="text-center mt-3 text-muted">
+            Already have an account? <a href="/login" className="text-success fw-bold text-decoration-none">Login</a>
+        </p>
       </div>
     </div>
   );
-}
+};
 
 export default Signup;

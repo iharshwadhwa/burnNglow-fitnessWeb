@@ -3,6 +3,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import logoImg from './assets/images/01-logo-dark.svg';
+import Swal from 'sweetalert2'; // <--- NEW IMPORT
 
 function Login() {
   const [formData, setFormData] = useState({
@@ -50,16 +51,32 @@ function Login() {
         localStorage.setItem('userToken', response.data.token);
         setLoginStatus('success');
         
-        alert("Login Successful!"); 
-        navigate('/');
+        // 👇 UPDATED: Replaced alert with SweetAlert2
+        Swal.fire({
+          title: 'Success!',
+          text: 'Login Successful',
+          icon: 'success',
+          confirmButtonText: 'Great!',
+          timer: 2000, // Auto close after 2 seconds
+          timerProgressBar: true
+        }).then(() => {
+           navigate('/');
+        });
         
       } catch (error) {
         setLoginStatus('error');
         console.error('Login failed:', error);
         
-        if(error.response) {
-            alert(`Login Failed: ${error.response.data.error}`);
-        }
+        // 👇 UPDATED: Replaced error alert with SweetAlert2
+        const errorMessage = error.response ? error.response.data.error : 'Something went wrong';
+        
+        Swal.fire({
+          icon: 'error',
+          title: 'Login Failed',
+          text: errorMessage,
+          confirmButtonColor: '#d33', // Red color for error
+          confirmButtonText: 'Try Again'
+        });
       }
     }
   };
